@@ -1,0 +1,181 @@
+// Variables (puedes definir tus appColors como variables SCSS)
+$header-bg: #2c3e50;
+$header-text: #ecf0f1;
+$page-bg: #f4f6f6;
+$card-bg: #ffffff;
+$primary-accent: #3498db;
+// ...etc.
+
+// Estilos globales para Home (si los tienes en un div contenedor con una clase)
+.home-container {
+  background-color: $page-bg;
+  font-family: Arial, sans-serif;
+  color: #333; // appColors.textDark
+}
+
+// Header
+.app-header {
+  background-color: $header-bg;
+  color: $header-text;
+  padding: 0 20px;
+  height: 60px; // HEADER_HEIGHT
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+
+  .logo-img {
+    height: 40px;
+    margin-right: 15px;
+    // Podrías añadir efectos de hover, etc.
+  }
+
+  .brand-name {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-right: auto;
+  }
+
+  nav {
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+
+      li {
+        margin-left: 10px;
+
+        a {
+          color: $header-text;
+          text-decoration: none;
+          padding: 8px 12px;
+          border-radius: 4px;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: $primary-accent; // appColors.primaryAccent
+          }
+        }
+      }
+    }
+  }
+}
+
+// Main content
+.main-content {
+  padding: 20px;
+  padding-top: calc(60px + 20px); // HEADER_HEIGHT + padding
+}
+
+// Sección genérica (puedes usar una clase base)
+.content-section {
+  background-color: $card-bg;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.07);
+  max-width: 800px;
+  margin: 20px auto; // Espacio entre secciones
+
+  &.inicio-section { // Estilos específicos para la sección de inicio
+    // ...
+  }
+
+  &.galeria-section {
+    margin-top: 40px; // Más espacio arriba
+
+    .section-title {
+      color: $header-bg; // appColors.headerBg
+      text-align: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid $primary-accent;
+      padding-bottom: 10px;
+      font-size: 1.8rem;
+    }
+
+    .section-description {
+      text-align: center;
+      color: #555; // appColors.textLight
+      margin-bottom: 20px;
+    }
+
+    .galeria-image {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: block;
+      margin: 20px auto;
+    }
+  }
+}
+
+// Formulario (puedes extraer estilos a clases)
+.task-form {
+  // ...
+  .form-input {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #dddddd; // appColors.borderColor
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    background-color: #ffffff; // appColors.inputBg
+    color: #333; // appColors.textDark
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555; // appColors.textLight
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+
+  .submit-button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background-color: $primary-accent;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: darken($primary-accent, 10%); // appColors.primaryAccentHover
+    }
+  }
+}
+
+// Lista de Tareas
+.task-list-container {
+  margin-top: 40px;
+  .list-title {
+    color: $header-bg;
+    text-align: center;
+    margin-bottom: 20px;
+    border-top: 1px solid #dddddd; // appColors.borderColor
+    padding-top: 20px;
+  }
+  // Estilos para ListCargo.jsx podrían ir aquí o en su propio SCSS
+}
+
+// Footer
+.app-footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 30px;
+  background-color: #34495e; // appColors.footerBg
+  color: #bdc3c7; // appColors.footerText
+  border-top: 3px solid $primary-accent;
+}
