@@ -95,6 +95,7 @@ const QuienesSomos = ({ colors }) => {
     <div style={pageStyle}>
       <main style={mainStyle}>
         <section id="quienes-somos" ref={introRef} style={{...overlappingContainerStyle, opacity: isIntroVisible ? 1 : 0, transform: isIntroVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s, transform 0.6s'}}>
+          {/* Imagen de aliado.JPG */}
           <div style={{...backgroundImageStyle, width: '65%', left: 0, backgroundImage: `url('/img/aliado.JPG')`}}></div>
           <div style={{...overlappingCardStyle, width: '55%', marginLeft: 'auto', opacity: isIntroVisible ? 1 : 0, transform: isIntroVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s 0.2s, transform 0.6s 0.2s'}}>
             <h1 style={sectionTitleStyle}>Somos <span style={accentTextStyle}>Aliados</span> en el Cuidado de tu Propiedad</h1>
@@ -139,6 +140,7 @@ const QuienesSomos = ({ colors }) => {
         </section>
 
         <section ref={experienceRef} style={{...overlappingContainerStyle, opacity: isExperienceVisible ? 1 : 0, transform: isExperienceVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s, transform 0.6s'}}>
+          {/* Imagen de experiencia.jpeg */}
           <div style={{...backgroundImageStyle, width: '65%', left: 'auto', right: 0, backgroundImage: `url('/img/experiencia.jpeg')`}}></div>
           <div style={{...overlappingCardStyle, width: '55%', marginLeft: 0, marginRight: 'auto', opacity: isExperienceVisible ? 1 : 0, transform: isExperienceVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s 0.2s, transform 0.6s 0.2s'}}>
             <h2 style={sectionTitleStyle}><span style={accentTextStyle}>Experiencia</span> y Compromiso Urbano</h2>
