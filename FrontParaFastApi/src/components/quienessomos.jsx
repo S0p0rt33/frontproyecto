@@ -1,231 +1,155 @@
-import React from "react";
-
-// Elementos del menú de navegación
-const navItems = [
-  { name: "INICIO", path: "#inicio" },
-  { name: "QUIÉNES SOMOS", path: "#quienes-somos" },
-  { name: "SERVICIOS", path: "#servicios" },
-  { name: "EQUIPO", path: "#equipo" },
-  { name: "CONTACTO", path: "#contacto" },
-];
-
-const HEADER_HEIGHT = '65px';
-
-// --- NUEVA PALETA DE COLORES "DARK MODE" ---
-const appColors = {
-  headerBg: '#1e272e', // Un gris casi negro para el header
-  headerText: '#ffffff',
-  pageBg: '#2c3e50', // Fondo principal azul (como el resto del proyecto)
-  cardBg: '#1e272e', // Tarjetas en un tono ligeramente más claro
-  primaryAccent: '#00a8ff', // Un azul eléctrico que resalta en la oscuridad
-  primaryAccentHover: '#0097e6',
-  textDark: '#f5f6fa', // Texto principal casi blanco
-  textLight: '#aaa69d', // Texto secundario más apagado
-  borderColor: '#485460',
-  footerText: '#d2dae2',
-};
+import React, { useRef, useState, useEffect } from "react";
 
 // --- Componente "Quiénes Somos" Rediseñado ---
-const QuienesSomos = () => {
-
-  // --- OBJETOS DE ESTILO PARA EL NUEVO DISEÑO ---
-  const pageStyle = { backgroundColor: appColors.pageBg, fontFamily: "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif", color: appColors.textDark, };
-  const headerStyle = {
-    backgroundColor: appColors.headerBg, color: appColors.headerText, padding: '0 30px', height: HEADER_HEIGHT,
-    position: 'fixed', top: 0, left: 0, width: '100%', zIndex: 1000, display: 'flex', alignItems: 'center',
-    justifyContent: 'space-between', boxShadow: '0 4px 10px rgba(0,0,0,0.4)', borderBottom: `2px solid ${appColors.primaryAccent}`,
-  };
-  const navLinkStyle = {
-    color: appColors.headerText, textDecoration: 'none', padding: '8px 15px', borderRadius: '4px',
-    fontWeight: '500', transition: 'background-color 0.3s ease, color 0.3s ease'
-  };
-  const mainStyle = { paddingTop: `calc(${HEADER_HEIGHT} + 40px)`, maxWidth: '1200px', margin: '0 auto', padding: '20px' };
-  const sectionStyle = { padding: '80px 0', };
-
-  // Estilos para el nuevo diseño superpuesto
-  const overlappingContainerStyle = {
-      position: 'relative',
-      display: 'flex',
-      alignItems: 'center',
-      minHeight: '500px',
-      margin: '40px 0',
+const QuienesSomos = ({ colors }) => {
+  // --- LÓGICA DE ANIMACIÓN (APLICADA A MÚLTIPLES SECCIONES) ---
+  const useAnimateOnScroll = (ref) => {
+    const [isVisible, setIsVisible] = useState(false);
+    useEffect(() => {
+      const observer = new window.IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      }, { threshold: 0.15 });
+      const currentRef = ref.current;
+      if (currentRef) observer.observe(currentRef);
+      return () => { if (currentRef) observer.unobserve(currentRef); };
+    }, [ref]);
+    return isVisible;
   };
 
-  const backgroundImageStyle = {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '65%',
-      height: '100%',
-      borderRadius: '16px',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      opacity: 0.4,
-  };
+  // Referencias y estados para cada sección animada
+  const introRef = useRef(null);
+  const missionRef = useRef(null);
+  const valuesRef = useRef(null);
+  const experienceRef = useRef(null);
 
-  const overlappingCardStyle = {
-      position: 'relative',
-      marginLeft: 'auto',
-      width: '55%',
-      backgroundColor: appColors.cardBg,
-      padding: '40px',
-      borderRadius: '16px',
-      boxShadow: '0 15px 40px rgba(0,0,0,0.5)',
-  };
+  const isIntroVisible = useAnimateOnScroll(introRef);
+  const isMissionVisible = useAnimateOnScroll(missionRef);
+  const isValuesVisible = useAnimateOnScroll(valuesRef);
+  const isExperienceVisible = useAnimateOnScroll(experienceRef);
 
+  // Datos para las tarjetas de valores
+  const valuesData = [
+    { icon: "🏆", title: "Calidad Superior", text: "Utilizamos materiales de primera y aplicamos las mejores prácticas para garantizar resultados duraderos y de excelencia." },
+    { icon: "⏱️", title: "Eficiencia y Rapidez", text: "Optimizamos nuestros procesos para ofrecer respuestas rápidas y soluciones efectivas, respetando su tiempo y recursos." },
+    { icon: "🤝", title: "Honestidad Absoluta", text: "Creemos en la comunicación clara y en construir relaciones de confianza a largo plazo a través de la transparencia." }
+  ];
+
+  // --- ESTILOS UNIFICADOS CON INICIO.JSX ---
+  const pageStyle = {
+    background: colors.pageBg,
+    fontFamily: "'Segoe UI', 'Roboto', sans-serif",
+    color: colors.textDark,
+    backgroundAttachment: 'fixed',
+    minHeight: '100vh',
+    padding: 0
+  };
+  const mainStyle = { paddingTop: '70px', maxWidth: '1200px', margin: '0 auto', padding: '40px' };
   const sectionTitleStyle = {
-      fontSize: '2.8rem',
-      fontWeight: 'bold',
-      color: appColors.textDark,
-      marginBottom: '15px',
-      lineHeight: 1.2,
+    fontSize: '2.8rem', fontWeight: 'bold', color: colors.textDark, marginBottom: '15px', lineHeight: 1.2,
+    textAlign: 'center',
   };
-  
-  const accentTextStyle = {
-      color: appColors.primaryAccent,
+  const accentTextStyle = { color: colors.primaryAccent };
+  const paragraphStyle = { fontSize: '1.1rem', lineHeight: '1.8', color: colors.textLight };
+  const overlappingContainerStyle = {
+    position: 'relative', display: 'flex', alignItems: 'center', minHeight: '500px', margin: '40px 0',
   };
-
-  const paragraphStyle = {
-    fontSize: '1.1rem',
-    lineHeight: '1.8',
-    color: appColors.textLight,
+  const backgroundImageStyle = {
+    position: 'absolute', top: 0, height: '100%', borderRadius: '16px', backgroundSize: 'cover',
+    backgroundPosition: 'center', opacity: 0.6,
   };
-
-  // Estilos para la sección Misión
-  const missionSectionStyle = {
-      ...sectionStyle,
-      textAlign: 'center',
-      position: 'relative',
-      padding: '100px 20px',
+  const overlappingCardStyle = {
+    position: 'relative', backgroundColor: colors.cardBg, padding: '50px', borderRadius: '16px',
+    boxShadow: '0 15px 40px rgba(0,0,0,0.5)', border: `1px solid ${colors.borderColor}`, backdropFilter: 'blur(10px)',
   };
-
+  const missionSectionStyle = { textAlign: 'center', position: 'relative', padding: '100px 20px' };
   const missionQuoteStyle = {
-      position: 'absolute',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      fontSize: '20rem',
-      color: appColors.borderColor,
-      opacity: 0.1,
-      zIndex: 1,
+    position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '20rem',
+    color: colors.borderColor, opacity: 0.05, zIndex: 1,
   };
-
-  const missionContentStyle = {
-      position: 'relative',
-      zIndex: 2,
-      maxWidth: '800px',
-      margin: '0 auto',
-  };
-
-  // Estilos para tarjetas de Valores
-  const valuesGridStyle = {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-      gap: '30px',
-      marginTop: '40px',
-  };
-
-  const valueCardStyle = {
-      backgroundColor: 'transparent',
-      border: `1px solid ${appColors.borderColor}`,
-      padding: '30px',
-      borderRadius: '12px',
-      transition: 'all 0.3s ease',
-  };
-
-  const valueIconStyle = { fontSize: '2.5rem', marginBottom: '20px', color: appColors.primaryAccent };
-  const valueTitleStyle = { fontSize: '1.4rem', fontWeight: '600', marginBottom: '10px', color: appColors.textDark };
-  const valueTextStyle = { fontSize: '0.95rem', lineHeight: '1.6', color: appColors.textLight };
-
+  const missionContentStyle = { position: 'relative', zIndex: 2, maxWidth: '800px', margin: '0 auto' };
+  const valuesGridStyle = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '30px', marginTop: '40px' };
+  const valueCardStyle = (isVisible, index) => ({
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
+    transition: `opacity 0.6s ease-out ${index * 0.15}s, transform 0.6s ease-out ${index * 0.15}s`,
+    backgroundColor: colors.cardBg,
+    border: `1px solid ${colors.borderColor}`,
+    backdropFilter: 'blur(10px)',
+    padding: '35px', borderRadius: '16px',
+    transitionProperty: 'transform, border-color, box-shadow, opacity',
+    transitionDuration: '0.3s, 0.3s, 0.3s, 0.6s',
+    transitionTimingFunction: 'ease',
+  });
+  const valueIconStyle = { fontSize: '2.5rem', marginBottom: '20px', color: colors.primaryAccent };
+  const valueTitleStyle = { fontSize: '1.4rem', fontWeight: '600', marginBottom: '10px', color: colors.textDark };
   const footerStyle = {
-    textAlign: 'center', padding: '40px', marginTop: '60px',
-    backgroundColor: appColors.footerBg, color: appColors.footerText,
+    textAlign: 'center', padding: '50px 40px', marginTop: '60px',
+    backgroundColor: colors.footerBg, color: colors.footerText,
+    borderTop: `1px solid ${colors.borderColor}`,
   };
 
   return (
     <div style={pageStyle}>
-      <header style={headerStyle}>
-        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginRight: 'auto' }}>HOME UP</div>
-        <nav>
-          <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex' }}>
-            {navItems.map((item) => (
-              <li key={item.name} style={{ marginLeft: '10px' }}>
-                <a href={item.path} style={navLinkStyle}
-                  onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = appColors.primaryAccent; e.currentTarget.style.color = '#fff';}}
-                  onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = appColors.headerText; }}
-                >{item.name.toUpperCase()}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </header>
-
       <main style={mainStyle}>
-        {/* --- SECCIÓN 1: INTRODUCCIÓN CON DISEÑO SUPERPUESTO --- */}
-        <section id="quienes-somos" style={overlappingContainerStyle}>
-            <div style={{...backgroundImageStyle, backgroundImage: `url('/img/aliado.JPG')`}}></div>
-            <div style={overlappingCardStyle}>
-                <h1 style={sectionTitleStyle}>Somos <span style={accentTextStyle}>Aliados</span> en el Cuidado de tu Propiedad</h1>
-                <p style={paragraphStyle}>
-                    En <strong>HOME UP</strong>, somos más que una empresa de mantenimiento; somos socios estratégicos dedicados a la optimización y preservación del valor de sus propiedades, con soluciones integrales adaptadas a la vida moderna.
-                </p>
-            </div>
+        <section id="quienes-somos" ref={introRef} style={{...overlappingContainerStyle, opacity: isIntroVisible ? 1 : 0, transform: isIntroVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s, transform 0.6s'}}>
+          <div style={{...backgroundImageStyle, width: '65%', left: 0, backgroundImage: `url('/img/aliado.JPG')`}}></div>
+          <div style={{...overlappingCardStyle, width: '55%', marginLeft: 'auto', opacity: isIntroVisible ? 1 : 0, transform: isIntroVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s 0.2s, transform 0.6s 0.2s'}}>
+            <h1 style={sectionTitleStyle}>Somos <span style={accentTextStyle}>Aliados</span> en el Cuidado de tu Propiedad</h1>
+            <p style={paragraphStyle}>
+              En <strong>HOME UP</strong>, somos más que una empresa de mantenimiento; somos socios estratégicos dedicados a la optimización y preservación del valor de sus propiedades.
+            </p>
+          </div>
         </section>
 
-        {/* --- SECCIÓN 2: MISIÓN --- */}
-        <section style={missionSectionStyle}>
-            <div style={missionQuoteStyle}>“</div>
-            <div style={missionContentStyle}>
-                <h2 style={{...sectionTitleStyle, fontSize: '2.2rem'}}>Nuestra Misión</h2>
-                <p style={{...paragraphStyle, fontSize: '1.2rem', fontStyle: 'italic', color: appColors.textDark}}>
-                    Asegurar que cada inmueble bajo nuestro cuidado se mantenga en condiciones óptimas de funcionalidad, seguridad y estética, brindando tranquilidad total a nuestros clientes para que puedan enfocarse en sus actividades principales.
-                </p>
-            </div>
+        <section ref={missionRef} style={{...missionSectionStyle, opacity: isMissionVisible ? 1 : 0, transform: isMissionVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s, transform 0.6s'}}>
+          <div style={missionQuoteStyle}>“</div>
+          <div style={missionContentStyle}>
+            <h2 style={{...sectionTitleStyle, fontSize: '2.2rem'}}>Nuestra Misión</h2>
+            <p style={{...paragraphStyle, fontSize: '1.2rem', fontStyle: 'italic', color: colors.textDark}}>
+              Asegurar que cada inmueble bajo nuestro cuidado se mantenga en condiciones óptimas de funcionalidad, seguridad y estética, brindando tranquilidad total a nuestros clientes.
+            </p>
+          </div>
         </section>
 
-        {/* --- SECCIÓN 3: VALORES --- */}
-        <section style={sectionStyle}>
-            <h2 style={{textAlign: 'center', ...sectionTitleStyle}}>Nuestros Valores Fundamentales</h2>
-            <div style={valuesGridStyle}>
-                {/* Tarjeta Valor 1 */}
-                <div style={valueCardStyle} onMouseEnter={(e) => {e.currentTarget.style.borderColor = appColors.primaryAccent; e.currentTarget.style.transform = 'translateY(-5px)'}} onMouseLeave={(e) => {e.currentTarget.style.borderColor = appColors.borderColor; e.currentTarget.style.transform = 'translateY(0)'}}>
-                    <div style={valueIconStyle}>🏆</div>
-                    <h3 style={valueTitleStyle}>Calidad Superior</h3>
-                    <p style={valueTextStyle}>Utilizamos materiales de primera y aplicamos las mejores prácticas para garantizar resultados duraderos y de excelencia.</p>
-                </div>
-                {/* Tarjeta Valor 2 */}
-                <div style={valueCardStyle} onMouseEnter={(e) => {e.currentTarget.style.borderColor = appColors.primaryAccent; e.currentTarget.style.transform = 'translateY(-5px)'}} onMouseLeave={(e) => {e.currentTarget.style.borderColor = appColors.borderColor; e.currentTarget.style.transform = 'translateY(0)'}}>
-                    <div style={valueIconStyle}>⏱️</div>
-                    <h3 style={valueTitleStyle}>Eficiencia y Rapidez</h3>
-                    <p style={valueTextStyle}>Optimizamos nuestros procesos para ofrecer respuestas rápidas y soluciones efectivas, respetando su tiempo y recursos.</p>
-                </div>
-                {/* Tarjeta Valor 3 */}
-                <div style={valueCardStyle} onMouseEnter={(e) => {e.currentTarget.style.borderColor = appColors.primaryAccent; e.currentTarget.style.transform = 'translateY(-5px)'}} onMouseLeave={(e) => {e.currentTarget.style.borderColor = appColors.borderColor; e.currentTarget.style.transform = 'translateY(0)'}}>
-                    <div style={valueIconStyle}>🤝</div>
-                    <h3 style={valueTitleStyle}>Honestidad Absoluta</h3>
-                    <p style={valueTextStyle}>Creemos en la comunicación clara y en construir relaciones de confianza a largo plazo a través de la transparencia.</p>
-                </div>
-            </div>
+        <section ref={valuesRef} style={{margin: '60px 0', opacity: isValuesVisible ? 1 : 0, transform: isValuesVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s, transform 0.6s'}}>
+          <h2 style={{textAlign: 'center', ...sectionTitleStyle}}>Nuestros Valores Fundamentales</h2>
+          <div style={valuesGridStyle}>
+            {valuesData.map((value, index) => (
+              <div key={index} style={valueCardStyle(isValuesVisible, index)}
+                onMouseEnter={e => {
+                  e.currentTarget.style.borderColor = colors.primaryAccent;
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.4)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.borderColor = colors.borderColor;
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <div style={valueIconStyle}>{value.icon}</div>
+                <h3 style={valueTitleStyle}>{value.title}</h3>
+                <p style={{...paragraphStyle, fontSize: '0.95rem'}}>{value.text}</p>
+              </div>
+            ))}
+          </div>
         </section>
 
-        {/* --- SECCIÓN 4: EXPERIENCIA (SUPERPUESTO INVERTIDO) --- */}
-        <section style={overlappingContainerStyle}>
-             <div style={{...backgroundImageStyle, left: 'auto', right: 0, backgroundImage: `url('/img/experiencia.jpeg')`}}></div>
-             <div style={{...overlappingCardStyle, marginLeft: 0, marginRight: 'auto'}}>
-                <h2 style={sectionTitleStyle}><span style={accentTextStyle}>Experiencia</span> y Compromiso Urbano</h2>
-                <p style={paragraphStyle}>
-                    Nuestro equipo de profesionales está rigurosamente seleccionado y calificado en un amplio espectro de especialidades. Comprendemos los desafíos únicos del entorno urbano para ofrecer un servicio inigualable.
-                </p>
-             </div>
+        <section ref={experienceRef} style={{...overlappingContainerStyle, opacity: isExperienceVisible ? 1 : 0, transform: isExperienceVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s, transform 0.6s'}}>
+          <div style={{...backgroundImageStyle, width: '65%', left: 'auto', right: 0, backgroundImage: `url('/img/experiencia.jpeg')`}}></div>
+          <div style={{...overlappingCardStyle, width: '55%', marginLeft: 0, marginRight: 'auto', opacity: isExperienceVisible ? 1 : 0, transform: isExperienceVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s 0.2s, transform 0.6s 0.2s'}}>
+            <h2 style={sectionTitleStyle}><span style={accentTextStyle}>Experiencia</span> y Compromiso Urbano</h2>
+            <p style={paragraphStyle}>
+              Nuestro equipo de profesionales está rigurosamente seleccionado y calificado. Comprendemos los desafíos únicos del entorno urbano para ofrecer un servicio inigualable.
+            </p>
+          </div>
         </section>
       </main>
-
-      <footer style={footerStyle}>    
-      </footer>
     </div>
   );
 };
 
-// Se asume que el nombre del componente debería ser QuienesSomos
-// si este archivo es solo para esa sección.
 export default QuienesSomos;

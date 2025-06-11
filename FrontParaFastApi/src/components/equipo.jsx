@@ -1,291 +1,164 @@
-import React, { useState, useEffect } from "react";
-// Las siguientes importaciones no se usarán directamente en la sección "Equipo",
-// pero se mantienen según la estructura del código proporcionado.
-import axiosInstance from "../api/axioInstance";
-import ListCargo from "./ListaCargo.jsx";
+import React, { useRef, useState, useEffect } from 'react';
 
-// Elementos del menú de navegación
-const navItems = [
-  { name: "INICIO", path: "#inicio" },
-  { name: "QUIÉNES SOMOS", path: "#quienes-somos" },
-  { name: "SERVICIOS", path: "#servicios" },
-  { name: "EQUIPO", path: "#equipo" },
-  { name: "COBERTURA", path: "#cobertura" },
-  { name: "GALERÍA", path: "#galeria" },
-  { name: "CONTACTO", path: "#contacto" },
-];
+// --- Componente Equipo (Versión Rediseñada) ---
+const Equipo = ({ colors }) => {
 
-const HEADER_HEIGHT = '50px';
-
-const appColors = {
-  headerBg: '#2c3e50',
-  headerText: '#ecf0f1',
-  pageBg: '#f4f6f6',
-  cardBg: '#ffffff',
-  memberCardBg: '#fdfdfd', // Fondo para las tarjetas de equipo
-  primaryAccent: '#3498db',
-  primaryAccentHover: '#2980b9',
-  textDark: '#333333',
-  textLight: '#555555',
-  borderColor: '#e0e0e0',
-  inputBg: '#ffffff',
-  footerBg: '#34495e',
-  footerText: '#bdc3c7',
-  overlayColor: 'rgba(44, 62, 80, 0.6)',
-};
-
-// Estilos de secciones anteriores (promocional, input, label) se mantienen definidos
-// pero no se usan en este render específico de la sección "Equipo".
-const promotionalSectionStyle = { /* ... */ };
-const promotionalTitleStyle = { /* ... */ };
-const promotionalParagraphStyle = { /* ... */ };
-const inputStyle = { /* ... */ };
-const labelStyle = { /* ... */ };
-
-
-const Home = () => {
-  // La lógica para tareas y su estado se mantienen según el código original,
-  // aunque no se use en la sección "Equipo".
-  const [tareas, setTareas] = useState([]);
-
-  useEffect(() => {
-    const fetchTareas = async () => {
-      try {
-        // Esta llamada se ejecutará, considera si es necesario para esta vista.
-        const response = await axiosInstance.get("http://127.0.0.1:8000/tarea/");
-        setTareas(response.data);
-      } catch (error)
-      {
-        console.error("Error al cargar las tareas:", error);
-        // Silenciamos el alert para no interrumpir la vista de "Equipo"
-        // alert("Error al cargar las tareas. Revise la consola para más detalles.");
-      }
-    };
-    fetchTareas();
-  }, []);
-
-  // handleCrearTarea no es relevante para la sección "Equipo".
-  // const handleCrearTarea = async (e) => { ... };
-
-
-  // Datos del equipo (debes reemplazarlos con los datos reales de HOME UP)
+  // --- 1. CONTENIDO AMPLIADO Y PROFESIONAL ---
+  // Se añade más información, nuevos roles y se usan íconos en lugar de imágenes.
   const teamData = [
     {
-      imagePlaceholder: "👤", // Puedes usar un path a una imagen real: '/images/miembro1.jpg'
-      name: "Laura González",
-      role: "Directora de Operaciones",
-      bio: "Con más de 12 años de experiencia en la gestión de proyectos de mantenimiento y construcción, Laura asegura la ejecución impecable y eficiente de cada servicio.",
+      nombre: "Alejandro Rojas",
+      cargo: "Director de Operaciones",
+      descripcion: "Con más de 15 años de experiencia, Alejandro orquesta cada proyecto con precisión. Su liderazgo garantiza que los estándares de calidad, tiempo y presupuesto se cumplan rigurosamente, asegurando la máxima eficiencia.",
+      icono: "🧠" // Ícono para estrategia y liderazgo
     },
     {
-      imagePlaceholder: "🛠️",
-      name: "Carlos Mendoza",
-      role: "Jefe Técnico Especializado",
-      bio: "Carlos lidera a nuestro equipo de técnicos, aportando su profundo conocimiento en múltiples disciplinas y su compromiso con la calidad y soluciones duraderas.",
+      nombre: "Valentina Correa",
+      cargo: "Líder de Atención al Cliente y Proyectos",
+      descripcion: "Valentina es el puente entre tus necesidades y nuestro equipo. Garantiza una comunicación fluida y transparente desde la cotización hasta la entrega final, asegurando que tu visión se materialice a la perfección.",
+      icono: "📞" // Ícono para comunicación y cliente
     },
     {
-      imagePlaceholder: "💼",
-      name: "Sofía Vargas",
-      role: "Atención al Cliente y Coordinación",
-      bio: "Sofía es el primer punto de contacto para nuestros clientes, garantizando una comunicación clara, respuestas rápidas y una coordinación efectiva de los servicios.",
+      nombre: "Ricardo Mendoza",
+      cargo: "Supervisor Técnico Senior",
+      descripcion: "La mente maestra detrás de la ejecución en campo. Ricardo supervisa a nuestros técnicos, resuelve los desafíos más complejos y certifica que cada trabajo, sin importar su tamaño, cumpla con nuestros exigentes estándares de calidad.",
+      icono: "📈" // Ícono para supervisión y calidad
     },
     {
-      imagePlaceholder: "👷",
-      name: "Equipo de Técnicos",
-      role: "Profesionales Calificados",
-      bio: "Un grupo selecto de expertos en plomería, electricidad, albañilería, pintura y más, dedicados a brindar un trabajo de la más alta calidad con amabilidad y profesionalismo.",
-    },
+      nombre: "Técnicos Especialistas",
+      cargo: "El Corazón Operativo de Home Up",
+      descripcion: "Nuestro equipo de técnicos certificados en plomería, electricidad, albañilería y más. Son profesionales dedicados, cuyo talento y compromiso son la base de cada solución exitosa que entregamos a nuestros clientes.",
+      icono: "🛠️" // Ícono para el equipo técnico
+    }
   ];
 
-  // Estilos para la sección de Equipo
-  const equipoSectionStyle = {
-    backgroundColor: appColors.cardBg,
-    padding: '40px 30px',
-    borderRadius: '10px',
-    boxShadow: '0 5px 20px rgba(0,0,0,0.07)',
-    maxWidth: '1000px', // Ligeramente más ancho para acomodar bien las tarjetas
-    margin: '0 auto 40px auto',
+  // --- 2. LÓGICA DE ANIMACIÓN AL HACER SCROLL ---
+  const sectionRef = useRef(null);
+
+  const useAnimateOnScroll = (ref) => {
+    const [isVisible, setIsVisible] = useState(false);
+    useEffect(() => {
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      }, { threshold: 0.1 });
+
+      const currentRef = ref.current;
+      if (currentRef) observer.observe(currentRef);
+      return () => { if (currentRef) observer.unobserve(currentRef); };
+    }, [ref]);
+    return isVisible;
   };
 
-  const equipoTitleStyle = {
-    color: appColors.headerBg,
+  const isSectionVisible = useAnimateOnScroll(sectionRef);
+
+  const animatedStyle = (isVisible, delay = 0) => ({
+    opacity: isVisible ? 1 : 0,
+    transform: isVisible ? 'translateY(0)' : 'translateY(30px)',
+    transition: `opacity 0.6s ease-out ${delay}s, transform 0.6s ease-out ${delay}s`,
+  });
+
+
+  // --- 3. ESTILOS MODERNIZADOS ---
+  const pageStyle = {
+    // Se asume que el contenedor padre ya tiene el fondo y la fuente.
+    // Este componente se enfoca en su contenido interno.
+  };
+  const mainStyle = { maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' };
+  const sectionTitleStyle = {
+    fontSize: '2.8rem', fontWeight: 'bold', color: colors.textDark, marginBottom: '20px', lineHeight: 1.2,
     textAlign: 'center',
-    fontSize: '2.5rem',
-    fontWeight: 'bold',
+  };
+  const introParagraphStyle = {
+      textAlign: 'center',
+      color: colors.textLight,
+      fontSize: '1.15rem',
+      lineHeight: 1.7,
+      maxWidth: '800px',
+      margin: '0 auto 50px auto',
+  };
+  const gridStyle = {
+    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '40px',
+  };
+
+  // Estilo de tarjeta evolucionado
+  const cardStyle = (index) => ({
+    ...animatedStyle(isSectionVisible, index * 0.1), // Animación en cascada
+    background: colors.cardBg,
+    border: `1px solid ${colors.borderColor}`,
+    borderRadius: '18px',
+    boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+    backdropFilter: 'blur(10px)',
+    padding: '30px',
+    textAlign: 'center',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+    color: colors.textDark,
+    display: 'flex', flexDirection: 'column', alignItems: 'center',
+    minHeight: '450px', // Altura aumentada para más texto
+    justifyContent: 'flex-start',
+  });
+  
+  // Nuevo estilo para el contenedor del ícono
+  const iconContainerStyle = {
+    width: '120px', height: '120px', borderRadius: '50%',
+    background: `linear-gradient(145deg, ${colors.cardBg}, rgba(255, 255, 255, 0.1))`,
+    border: `2px solid ${colors.borderColor}`,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
     marginBottom: '25px',
-    borderBottom: `3px solid ${appColors.primaryAccent}`,
-    paddingBottom: '15px',
+    transition: 'border-color 0.3s ease',
+  };
+  const iconStyle = {
+      fontSize: '3.5rem', // Tamaño del emoji
+      opacity: 0.8,
   };
 
-  const equipoIntroParagraphStyle = {
-    fontSize: '1.15rem',
-    lineHeight: '1.75',
-    color: appColors.textLight,
-    textAlign: 'center',
-    maxWidth: '800px',
-    margin: '0 auto 45px auto',
-  };
-
-  const memberCardsContainerStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))', // Responsive
-    gap: '30px',
-  };
-
-  const memberCardStyle = {
-    backgroundColor: appColors.memberCardBg,
-    border: `1px solid ${appColors.borderColor}`,
-    borderRadius: '8px',
-    padding: '30px 25px',
-    textAlign: 'center',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.06)',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  };
-
-  const memberCardHoverStyle = {
-    transform: 'translateY(-6px)',
-    boxShadow: '0 8px 18px rgba(0,0,0,0.1)',
-  };
-
-  const memberCardImagePlaceholderStyle = {
-    width: '130px',
-    height: '130px',
-    borderRadius: '50%',
-    backgroundColor: appColors.primaryAccent, // Color de fondo si no hay imagen
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: appColors.headerText, // Color del icono/texto placeholder
-    fontSize: '3.5rem', // Tamaño del icono placeholder
-    marginBottom: '20px',
-    overflow: 'hidden', // Para asegurar que la imagen (si la pones) no se desborde
-    // Si usas una imagen real:
-    // backgroundImage: `url(${member.imagePath})`, // Asegúrate de tener 'imagePath' en teamData
-    // backgroundSize: 'cover',
-    // backgroundPosition: 'center',
-  };
-
-  const memberCardNameStyle = {
-    fontSize: '1.5rem',
-    fontWeight: '600',
-    color: appColors.textDark,
-    marginBottom: '8px',
-  };
-
-  const memberCardRoleStyle = {
-    fontSize: '1rem',
-    color: appColors.primaryAccent,
-    fontWeight: '500',
-    marginBottom: '15px',
-    minHeight: '40px', // Para alinear roles si tienen 1 o 2 líneas
-  };
-
-  const memberCardBioStyle = {
-    fontSize: '0.9rem',
-    color: appColors.textLight,
-    lineHeight: '1.6',
-    flexGrow: 1, // Ayuda a que todas las tarjetas tengan una altura similar si el texto varía
-  };
-
+  // Tipografía de tarjeta refinada
+  const nameStyle = { fontSize: '1.5rem', fontWeight: '600', marginBottom: '8px', color: colors.textDark };
+  const roleStyle = { fontSize: '1.1rem', color: colors.primaryAccent, marginBottom: '16px', fontWeight: '500', minHeight: '50px' };
+  const descStyle = { fontSize: '1rem', color: colors.textLight, lineHeight: 1.6 };
 
   return (
-    <div style={{ backgroundColor: appColors.pageBg, fontFamily: 'Arial, sans-serif' }}>
-      <header style={{
-        backgroundColor: appColors.headerBg,
-        color: appColors.headerText,
-        padding: '0 20px',
-        height: HEADER_HEIGHT,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 1000,
-        boxSizing: 'border-box',
-        display: 'flex',
-        alignItems: 'center',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-      }}>
-        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', marginRight: 'auto' }}>HOME UP</div>
-        <nav>
-          <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex' }}>
-            {navItems.map((item) => (
-              <li key={item.name} style={{ marginLeft: '10px' }}>
-                <a
-                  href={item.path}
-                  style={{
-                    color: appColors.headerText,
-                    textDecoration: 'none',
-                    padding: '8px 12px',
-                    borderRadius: '4px',
-                    transition: 'background-color 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = appColors.primaryAccent}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  {item.name.toUpperCase()}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </header>
-
-      <main style={{
-        padding: '20px',
-        paddingTop: `calc(${HEADER_HEIGHT} + 40px)`
-      }}>
-        <section id="equipo" style={equipoSectionStyle}>
-          <h1 style={equipoTitleStyle}>Nuestro Equipo de Expertos</h1>
-          <p style={equipoIntroParagraphStyle}>
-            En <strong>HOME UP</strong>, el pilar fundamental de nuestro éxito es nuestro equipo. Profesionales apasionados, con una vasta experiencia y un compromiso genuino con la excelencia, son quienes hacen posible que cada proyecto de mantenimiento locativo se convierta en una solución efectiva y satisfactoria para nuestros clientes en todo el sector urbano.
-          </p>
-
-          <div style={memberCardsContainerStyle}>
-            {teamData.map((member, index) => (
-              <div
-                key={index}
-                style={memberCardStyle}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = memberCardHoverStyle.transform;
-                  e.currentTarget.style.boxShadow = memberCardHoverStyle.boxShadow;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.06)';
-                }}
-              >
-                <div style={memberCardImagePlaceholderStyle}>
-                  {/* Si usas imágenes reales, puedes cambiar esto por un <img> */}
-                  {/* Ejemplo: <img src={member.imagePath} alt={member.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} /> */}
-                  {member.imagePlaceholder}
-                </div>
-                <h3 style={memberCardNameStyle}>{member.name}</h3>
-                <p style={memberCardRoleStyle}>{member.role}</p>
-                <p style={memberCardBioStyle}>{member.bio}</p>
+    <div style={pageStyle}>
+      <main style={mainStyle} ref={sectionRef}>
+        <h2 style={{...sectionTitleStyle, ...animatedStyle(isSectionVisible)}}>
+          Un Equipo <span style={{ color: colors.primaryAccent }}>Comprometido</span> con la Excelencia
+        </h2>
+        <p style={{...introParagraphStyle, ...animatedStyle(isSectionVisible, 0.1)}}>
+          Detrás de cada proyecto exitoso de HOME UP, hay un equipo de profesionales apasionados. No solo somos expertos en nuestro campo; somos personas dedicadas a construir confianza y a entregar resultados que superen tus expectativas.
+        </p>
+        <div style={gridStyle}>
+          {teamData.map((miembro, idx) => (
+            <div
+              key={idx}
+              style={cardStyle(idx)}
+              onMouseEnter={e => {
+                e.currentTarget.style.transform = 'translateY(-10px)';
+                e.currentTarget.style.boxShadow = '0 16px 50px rgba(0,0,0,0.3)';
+                // Encuentra el contenedor del ícono dentro de la tarjeta y cambia su borde
+                e.currentTarget.querySelector('.icon-container').style.borderColor = colors.primaryAccent;
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.2)';
+                e.currentTarget.querySelector('.icon-container').style.borderColor = colors.borderColor;
+              }}
+            >
+              {/* Contenedor del Ícono (reemplaza a <img>) */}
+              <div className="icon-container" style={iconContainerStyle}>
+                  <span style={iconStyle} role="img" aria-label="ícono de rol">{miembro.icono}</span>
               </div>
-            ))}
-          </div>
-
-          <p style={{...equipoIntroParagraphStyle, marginTop: '50px', fontSize: '1.1rem'}}>
-            Cada miembro de nuestro equipo está listo para escuchar tus necesidades y ofrecerte la mejor asesoría y servicio. ¡Confía en los expertos de <strong>HOME UP</strong>!
-          </p>
-        </section>
-      </main>
-
-      <footer style={{
-        textAlign: 'center',
-        padding: '20px',
-        marginTop: '30px',
-        backgroundColor: appColors.footerBg,
-        color: appColors.footerText,
-        borderTop: `3px solid ${appColors.primaryAccent}`
-      }}>
-        <p>&copy; {new Date().getFullYear()} HOME UP. Todos los derechos reservados.</p>
-      </footer>
+              
+              <h3 style={nameStyle}>{miembro.nombre}</h3>
+              <p style={roleStyle}>{miembro.cargo}</p>
+              <p style={descStyle}>{miembro.descripcion}</p>
+            </div>
+          ))}
+        </div>
+      </main> 
     </div>
   );
 };
 
-export default Home;
+export default Equipo;

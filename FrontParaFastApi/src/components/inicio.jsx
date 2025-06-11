@@ -1,354 +1,183 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+// Asegurate que los nombres de tus archivos coincidan con estas importaciones.
+// Es una buena practica usar Mayuscula inicial para los componentes.
 import QuienesSomos from './quienessomos';
-import Equipo from './equipo';
 import Servicio from './servicio';
-import Cobertura from './cobertura';
+import Equipo from './equipo';
 import Contacto from './contacto';
-
-
+import Cobertura from './cobertura';
 
 // Elementos del menú de navegación
 const navItems = [
-  { name: "INICIO", path: "#inicio" },
-  { name: "QUIÉNES SOMOS", path: "#quienes-somos" },
-  { name: "SERVICIOS", path: "#servicios" },
-  { name: "EQUIPO", path: "#equipo" },
-  { name: "CONTACTO", path: "#contacto" },
+  { name: "INICIO", path: "inicio" },
+  { name: "SERVICIOS", path: "servicios" },
+  { name: "QUIÉNES SOMOS", path: "quienes-somos" },
+  { name: "EQUIPO", path: "equipo" },
+  { name: "COBERTURA", path: "cobertura" },
+  { name: "CONTACTO", path: "contacto" },
 ];
 
-const HEADER_HEIGHT = '60px';
+const HEADER_HEIGHT = '70px';
 
-// --- DEFINICIÓN DE MÚLTIPLES TEMAS DE DISEÑO ---
-const themeAqua = {
-  name: 'Aqua',
-  headerBg: '#2c3e50',
-  headerText: '#ffffff',
-  headerBorder: '#1abc9c',
-  pageBg: '#f4f7f6',
-  cardBg: '#ffffff',
-  primaryAccent: '#1abc9c',
-  primaryAccentHover: '#16a085',
-  textDark: '#34495e',
-  textLight: '#7f8c8d',
-  borderColor: '#e0e0e0',
-  footerBg: '#2c3e50',
-  footerText: '#bdc3c7',
-  overlayColor: 'rgba(44, 62, 80, 0.6)',
-  heroTextColor: '#ffffff',
-  heroButtonShadow: '0 6px 12px rgba(26, 188, 156, 0.3)',
-  heroButtonShadowHover: '0 8px 15px rgba(22, 160, 133, 0.4)',
+// TEMA DE DISEÑO "GALAXY GOLD"
+const themeGalaxyGold = {
+  name: 'Galaxy Gold',
+  pageBg: 'linear-gradient(160deg, #0d122b 0%, #1a1a32 50%, #3b1f3a 100%)',
+  headerBg: 'rgba(13, 18, 43, 0.8)',
+  cardBg: 'rgba(26, 26, 50, 0.6)',
+  headerText: '#f1f2f6',
+  primaryAccent: '#FFD700', // Dorado Metálico
+  primaryAccentHover: '#FFC107', // Ámbar intenso
+  textDark: '#ffffff',
+  textLight: '#b0bec5',
+  borderColor: 'rgba(255, 215, 0, 0.2)',
+  footerBg: '#0d122b',
+  overlayColor: 'rgba(0, 0, 0, 0.3)',
+  heroButtonShadow: '0 5px 25px rgba(255, 215, 0, 0.3)',
+  heroButtonShadowHover: '0 8px 30px rgba(255, 193, 7, 0.4)',
 };
 
-const themePremium = {
-  name: 'Premium',
-  headerBg: '#2c3e50',
-  headerText: '#ffffff',
-  headerBorder: '#1abc9c',
-  pageBg: '#f8f9fa',
-  cardBg: '#ffffff',
-  primaryAccent: '#778DA9',
-  primaryAccentHover: '#415A77',
-  textDark: '#0D1B2A',
-  textLight: '#415A77',
-  borderColor: '#dee2e6',
-  footerBg: '#0D1B2A',
-  footerText: '#E0E1DD',
-  overlayColor: 'rgba(13, 27, 42, 0.7)',
-  heroTextColor: '#ffffff',
-  heroButtonShadow: '0 6px 12px rgba(65, 90, 119, 0.3)',
-  heroButtonShadowHover: '0 8px 15px rgba(65, 90, 119, 0.4)',
-};
+// --- Componente Principal "Inicio" ---
+const Inicio = () => {
+  const colors = themeGalaxyGold;
+  const [activeSection, setActiveSection] = useState("inicio");
+  const [isAnimated, setIsAnimated] = useState(false);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
-const themeVibrant = {
-  name: 'Vibrant',
-  headerBg: '#2c3e50',
-  headerText: '#ffffff',
-  headerBorder: '#1abc9c',
-  pageBg: '#121212',
-  cardBg: '#1c1c20',
-  primaryAccent: 'linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045)',
-  primaryAccentHover: 'linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045)',
-  textDark: '#f1f2f6',
-  textLight: '#a4a4a4',
-  borderColor: '#3a3a3a',
-  footerBg: '#1c1c20',
-  footerText: '#a4a4a4',
-  overlayColor: 'rgba(0, 0, 0, 0.5)',
-  heroTextColor: '#ffffff',
-  heroButtonShadow: '0 6px 20px rgba(253, 29, 29, 0.3)',
-  heroButtonShadowHover: '0 8px 25px rgba(253, 29, 29, 0.4)',
-};
-
-// --- Componente Principal de la Página de Inicio ---
-const Home = () => {
-  // Elige el tema para el cuerpo de la página. El header se mantendrá igual.
-  const activeTheme = themePremium; 
-
-  const colors = activeTheme;
+  useEffect(() => {
+    // Cuando cambia la sección activa, hacer scroll al top de la página
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (activeSection === "inicio" && !hasAnimated) {
+      const timer = setTimeout(() => {
+        setIsAnimated(true);
+        setHasAnimated(true);
+      }, 100);
+      return () => clearTimeout(timer);
+    } else if (activeSection !== "inicio") {
+      setIsAnimated(false);
+    }
+  }, [activeSection, hasAnimated]);
 
   // --- OBJETOS DE ESTILO ---
-
-  const pageStyle = {
-    backgroundColor: colors.pageBg,
-    fontFamily: "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
-    color: colors.textDark,
-  };
-
+  const pageStyle = { background: colors.pageBg, fontFamily: "'Segoe UI', 'Roboto', sans-serif", color: colors.textDark, backgroundAttachment: 'fixed' };
   const headerStyle = {
-    backgroundColor: colors.headerBg,
-    color: colors.headerText,
-    padding: '0 40px',
-    height: HEADER_HEIGHT,
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    zIndex: 1000,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    boxShadow: '0 3px 6px rgba(0,0,0,0.15)',
-    borderBottom: `3px solid ${colors.headerBorder}`,
+    backgroundColor: colors.headerBg, backdropFilter: 'blur(10px)', color: colors.headerText,
+    padding: '0 40px', height: HEADER_HEIGHT, position: 'fixed', top: 0, left: 0,
+    width: '100%', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+    borderBottom: `1px solid ${colors.borderColor}`,
   };
-  
-  // NUEVO: Contenedor para los elementos de la derecha en el header
-  const rightHeaderSectionStyle = {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '25px', // Espacio entre el menú y el botón de login
-  };
-
+  const rightHeaderSectionStyle = { display: 'flex', alignItems: 'center', gap: '25px' };
   const navLinkStyle = {
-    color: colors.headerText,
-    textDecoration: 'none',
-    padding: '10px 15px',
-    borderRadius: '6px',
-    fontWeight: '600',
-    fontSize: '0.9rem', // Ligeramente más pequeño para dar espacio
-    textTransform: 'uppercase',
-    transition: 'all 0.3s ease',
+    color: colors.headerText, textDecoration: 'none', padding: '10px 15px', borderRadius: '6px',
+    fontWeight: '500', textTransform: 'uppercase', transition: 'all 0.3s ease', letterSpacing: '0.5px'
   };
-  
-  // NUEVO: Estilo para el botón de Iniciar Sesión
   const loginButtonStyle = {
-      ...navLinkStyle, // Hereda algunos estilos base
-      padding: '8px 20px',
-      border: `2px solid ${colors.headerBorder}`,
-      borderRadius: '50px',
-      backgroundColor: 'transparent',
-      color: colors.headerBorder,
-      fontWeight: 'bold',
+    ...navLinkStyle, padding: '8px 24px', border: `2px solid ${colors.primaryAccent}`,
+    borderRadius: '50px', color: colors.primaryAccent, fontWeight: 'bold',
   };
-
-  const mainStyle = {
-    padding: '20px',
-    paddingTop: `calc(${HEADER_HEIGHT} + 40px)`,
-    maxWidth: '1100px',
-    margin: '0 auto'
-  };
-
+  const mainStyle = { paddingTop: HEADER_HEIGHT };
   const heroSectionStyle = {
-    textAlign: 'center',
-    padding: '120px 40px',
-    backgroundImage: `url('/images/mantenimiento-bg.jpg')`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center center',
-    backgroundAttachment: 'fixed',
-    borderRadius: '16px',
-    color: colors.heroTextColor,
-    position: 'relative',
-    overflow: 'hidden',
+    display: 'flex', alignItems: 'center', minHeight: '100vh',
+    padding: '40px', background: `radial-gradient(ellipse at top left, ${colors.overlayColor}, transparent 70%)`,
   };
-
-  const heroOverlayStyle = {
-      position: 'absolute',
-      top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: colors.overlayColor,
-      backdropFilter: 'blur(4px)',
-      zIndex: 1,
-  };
-  
-  const heroContentStyle = {
-      position: 'relative',
-      zIndex: 2,
-      textShadow: '0 2px 8px rgba(0,0,0,0.5)',
-  };
-
-  const heroTitleStyle = {
-    fontSize: '3.5rem',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-  };
-
-  const heroParagraphStyle = {
-    fontSize: '1.25rem',
-    lineHeight: '1.7',
-    maxWidth: '700px',
-    margin: '0 auto 40px auto',
-  };
-
-  const ctaButtonStyle = {
-    padding: '16px 40px',
-    background: colors.primaryAccent,
-    color: colors.headerText,
-    border: 'none',
-    borderRadius: '50px',
-    fontSize: '1.1rem',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    boxShadow: colors.heroButtonShadow,
-    transition: 'all 0.3s ease'
-  };
-
-  const contentSectionStyle = {
-    padding: '80px 20px',
-    textAlign: 'center',
-  };
-
-  const sectionTitleStyle = {
-    fontSize: '2.5rem',
-    color: colors.textDark,
-    marginBottom: '50px',
-    fontWeight: '600',
-  };
-
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-    gap: '30px',
-    textAlign: 'left',
-  };
-
-  const featureCardStyle = {
-    backgroundColor: colors.cardBg,
-    padding: '35px',
-    borderRadius: '12px',
-    borderTop: `4px solid`,
-    borderImageSource: colors.primaryAccent,
-    borderImageSlice: 1,
-    boxShadow: '0 8px 25px rgba(0,0,0,0.05)',
-    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-  };
-  
-  const featureIconStyle = {
-      fontSize: '3rem',
-      background: colors.primaryAccent,
-      WebkitBackgroundClip: 'text',
-      color: 'transparent',
-      marginBottom: '20px',
-  };
-
-  const featureTitleStyle = {
-      fontSize: '1.5rem',
-      margin: '0 0 15px 0',
-      color: colors.textDark,
-  };
-
-  const featureTextStyle = {
-      fontSize: '1rem',
-      lineHeight: '1.6',
-      color: colors.textLight,
-  };
-  
-  const finalCtaSectionStyle = {
-      ...contentSectionStyle,
-      background: `linear-gradient(135deg, ${colors.footerBg} 0%, ${colors.headerBg} 100%)`,
-      color: colors.headerText,
-      borderRadius: '16px',
-      marginTop: '50px',
-  }
-
+  const heroContentColumnStyle = { flex: '1 1 55%', paddingRight: '50px' };
+  const heroImageColumnStyle = { flex: '1 1 45%', display: 'flex', alignItems: 'center', justifyContent: 'center' };
+  const contentSectionWrapper = { padding: '80px 40px' };
   const footerStyle = {
-    textAlign: 'center',
-    padding: '40px 20px',
-    marginTop: '50px',
-    backgroundColor: colors.footerBg,
-    color: colors.footerText,
+    textAlign: 'center', padding: '50px 40px', marginTop: '60px',
+    backgroundColor: colors.footerBg, color: colors.footerText,
+    borderTop: `1px solid ${colors.borderColor}`,
+  };
+
+  // Estilos base para elementos animados
+  const baseHeroTextStyle = {
+    transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
+  };
+
+  // --- Mapeo de secciones a componentes ---
+  const sectionComponents = {
+    "inicio": () => (
+      <section id="inicio" style={heroSectionStyle}>
+        <div style={heroContentColumnStyle}>
+          <h1 style={{
+            ...baseHeroTextStyle,
+            fontSize: '4.5rem', fontWeight: 'bold', marginBottom: '25px', lineHeight: 1.1, transitionDelay: '0.2s',
+            opacity: isAnimated || hasAnimated ? 1 : 0,
+            transform: isAnimated || hasAnimated ? 'translateY(0)' : 'translateY(20px)',
+          }}>Soluciones <span style={{color: colors.primaryAccent}}>Integrales</span> para tu Propiedad</h1>
+          <p style={{
+            ...baseHeroTextStyle,
+            fontSize: '1.2rem', lineHeight: '1.8', maxWidth: '600px', marginBottom: '40px', color: colors.textLight, transitionDelay: '0.4s',
+            opacity: isAnimated || hasAnimated ? 1 : 0,
+            transform: isAnimated || hasAnimated ? 'translateY(0)' : 'translateY(20px)',
+          }}>
+            Desde reparaciones urgentes hasta mantenimiento preventivo, HOME UP es tu socio de confianza para garantizar la calidad, eficiencia y tranquilidad que mereces.
+          </p>
+          <button style={{
+            ...baseHeroTextStyle,
+            padding: '18px 45px', background: colors.primaryAccent, color: '#000', border: 'none',
+            borderRadius: '50px', fontSize: '1.2rem', fontWeight: 'bold', cursor: 'pointer',
+            textTransform: 'uppercase', letterSpacing: '1px', boxShadow: colors.heroButtonShadow,
+            transition: 'all 0.5s ease-out', transitionDelay: '0.6s',
+            opacity: isAnimated || hasAnimated ? 1 : 0,
+            transform: isAnimated || hasAnimated ? 'translateY(0)' : 'translateY(20px)'
+          }}
+            onClick={() => setActiveSection('servicios')}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.primaryAccentHover; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = colors.heroButtonShadowHover;}}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = colors.primaryAccent; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = colors.heroButtonShadow;}}
+          >Descubre Más</button>
+        </div>
+        <div style={heroImageColumnStyle}>
+          <div style={{
+            ...baseHeroTextStyle,
+            width: '100%', maxWidth: '500px', height: '600px', borderRadius: '20px',
+            backgroundColor: colors.cardBg, border: `1px solid ${colors.borderColor}`,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: colors.textLight, fontSize: '2rem', textAlign: 'center',
+            boxShadow: `0 0 40px rgba(255, 215, 0, 0.1)`, transitionDelay: '0.3s',
+            opacity: isAnimated || hasAnimated ? 1 : 0,
+            transform: isAnimated || hasAnimated ? 'translateY(0)' : 'translateY(20px)'
+          }}>
+            <img src="/img/inicio.JPG" alt="Imagen principal Home Up" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '20px'}} />
+          </div>
+        </div>
+      </section>
+    ),
+    "servicios": () => <div style={contentSectionWrapper}><Servicio colors={colors} /></div>,
+    "quienes-somos": () => <div style={contentSectionWrapper}><QuienesSomos colors={colors} /></div>,
+    "equipo": () => <div style={contentSectionWrapper}><Equipo colors={colors} /></div>,
+    "cobertura": () => <div style={contentSectionWrapper}><Cobertura colors={colors} /></div>,
+    "contacto": () => <div style={contentSectionWrapper}><Contacto colors={colors} /></div>,
   };
 
   return (
     <div style={pageStyle}>
+      {/* Header/nav único para toda la app SPA */}
       <header style={headerStyle}>
         <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginRight: 'auto' }}>HOME UP</div>
-        
-        {/* NUEVO: Contenedor para agrupar navegación y botón de login */}
         <div style={rightHeaderSectionStyle}>
-            <nav>
-              <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex' }}>
-                {navItems.map((item) => (
-                  <li key={item.name} style={{ marginLeft: '5px' }}>
-                    <a
-                      href={item.path}
-                      style={navLinkStyle}
-                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.headerBorder; e.currentTarget.style.color = '#000';}}
-                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = colors.headerText; }}
-                    >
-                      {item.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            {/* NUEVO: Botón de Iniciar Sesión */}
-            <a 
-                href="/login" // Este enlace te llevará a tu página de login
-                style={loginButtonStyle}
-                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.headerBorder; e.currentTarget.style.color = '#000';}}
-                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = colors.headerBorder; }}
-            >
-                Iniciar Sesión
-            </a>
+          <nav>
+            <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex' }}>
+              {navItems.map((item) => (
+                <li key={item.name}><span
+                  style={{...navLinkStyle, color: activeSection === item.path ? colors.primaryAccent : colors.headerText, cursor: 'pointer'}}
+                  onClick={() => setActiveSection(item.path)}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = colors.primaryAccent; }}
+                  onMouseLeave={(e) => { if (activeSection !== item.path) e.currentTarget.style.color = colors.headerText; }}
+                >{item.name}</span></li>
+              ))}
+            </ul>
+          </nav>
+          <a href="/login" style={loginButtonStyle}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.primaryAccent; e.currentTarget.style.color = '#000';}}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = colors.primaryAccent; }}
+          >Iniciar Sesión</a>
         </div>
       </header>
-
+      {/* Renderizado SPA de la sección activa */}
       <main style={mainStyle}>
-        <section id="inicio" style={heroSectionStyle}>
-          <div style={heroOverlayStyle}></div>
-          <div style={heroContentStyle}>
-              <h1 style={heroTitleStyle}>Mantenimiento Experto Para Tus Espacios</h1>
-              <p style={heroParagraphStyle}>
-                Transforma y protege tu propiedad con <strong>HOME UP</strong>. Ofrecemos soluciones integrales, garantizando calidad, eficiencia y la tranquilidad que mereces.
-              </p>
-              <button
-                style={ctaButtonStyle}
-                onClick={() => document.getElementById('quienes-somos')?.scrollIntoView({ behavior: 'smooth' })}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = colors.heroButtonShadowHover; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = colors.heroButtonShadow; }}
-              >
-                Conócenos
-              </button>
-          </div>
-        </section>
-
-        {/* Sección Quiénes Somos (importada) */}
-        <section id="quienes-somos" style={contentSectionStyle}>
-          <QuienesSomos />
-        </section>
-
-        {/* Sección Servicios (importada) */}
-        <section id="servicios" style={contentSectionStyle}>
-          <Servicio />
-        </section>
-        
-        {/* Sección Equipo (importada) */}
-        <section id="equipo" style={contentSectionStyle}>
-          <Equipo />
-        </section>
-
-        {/* Sección Cobertura (importada) */}
-        <section id="cobertura" style={contentSectionStyle}>
-          <Cobertura />
-        </section>
-
-        {/* Sección Contacto (importada) */}
-        <section id="contacto" style={finalCtaSectionStyle}>
-          <Contacto />
-        </section>
+        {sectionComponents[activeSection] && sectionComponents[activeSection]()}
       </main>
-
       <footer style={footerStyle}>
         <p>&copy; {new Date().getFullYear()} HOME UP. Todos los derechos reservados.</p>
       </footer>
@@ -356,4 +185,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Inicio;
