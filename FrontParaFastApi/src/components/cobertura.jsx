@@ -146,6 +146,20 @@ const Cobertura = ({ colors }) => {
   const zoneDescriptionStyle = { fontSize: '0.95rem', color: colors.textLight, lineHeight: '1.6' };
   const contactLinkStyle = { color: colors.primaryAccent, fontWeight: 'bold', textDecoration: 'none', transition: 'color 0.3s ease' }
 
+  // --- CONEXION CON GOOGLE MAPS  ---
+  const googleMapsEmbed = (
+    <iframe
+      title="Mapa de Bogotá"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3976.833587377785!2d-74.0817536846756!3d4.609710343987616!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e3f99a4b2b8c6b1%3A0x4018f18f5e2c5c0!2sBogot%C3%A1%2C%20Colombia!5e0!3m2!1ses-419!2sco!4v1718123456789!5m2!1ses-419!2sco"
+      width="100%"
+      height="500"
+      style={{ border: 0, borderRadius: '16px' }}
+      allowFullScreen=""
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+    ></iframe>
+  );
+
   return (
     // La animación se aplica a todo el contenido de la sección
     <div ref={sectionRef}>
@@ -170,15 +184,8 @@ const Cobertura = ({ colors }) => {
       
       <div style={mainContentStyle}>
         <div style={{...mapColumnStyle, ...animatedContainerStyle(isSectionVisible, 0.2)}}>
-            <div 
-              style={mapPlaceholderStyle}
-              onMouseEnter={(e) => { e.currentTarget.style.animationPlayState = 'paused'; e.currentTarget.style.borderColor = colors.primaryAccent; e.currentTarget.style.boxShadow = `0 0 40px rgba(255, 215, 0, 0.3)`;}}
-              onMouseLeave={(e) => { e.currentTarget.style.animationPlayState = 'running'; e.currentTarget.style.borderColor = colors.borderColor;}}
-            >
-              <span style={{fontSize: '3.5rem', marginBottom: '15px'}} role="img" aria-label="map icon">🗺️</span>
-              <p style={{color: colors.textDark, fontSize: '1.3rem', fontWeight: 600}}>Visualiza Nuestra Cobertura</p>
-              <p style={{fontSize: '0.9rem', maxWidth: '80%'}}>(Aquí podrías integrar un mapa interactivo de Google Maps)</p>
-            </div>
+            {/* Google Maps para Bogotá */}
+            {googleMapsEmbed}
         </div>
 
         <div style={zonesColumnStyle}>

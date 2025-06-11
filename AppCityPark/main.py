@@ -4,6 +4,9 @@ from usuario_map import usuarioRouter
 from cargo import cargoRouter
 from fastapi.middleware.cors import CORSMiddleware
 from tarea import tareaRouter  
+from fastapi import Request, HTTPException
+import mysql.connector
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -41,6 +44,47 @@ async def read_both_paramTypes_item(item_id: int, q: Union[str, None] = None):
 @app.delete("/items_del/{item_id}")
 async def delete_by_id(item_id: int):
     return {"resultado": "Se ha eliminado correctamente el item solicitado"}
-    
-    
-    
+
+# --- MODELOS PARA ADMIN Y CASOS ---
+class AdminLogin(BaseModel):
+    email: str
+    password: str
+
+# --- ENDPOINT LOGIN ADMIN ---
+@app.post("/login_admin")
+async def login_admin(data: AdminLogin):
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",  # Cambia por tu contraseña real
+        database="Homeup"
+    )
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM Administradores WHERE email=%s AND password=%s", (data.email, data.password))
+    admin = cursor.fetchone()
+    cursor.close()
+    conn.close()
+    if admin:
+        return {"success": True, "nombre": admin["nombre"]}
+    else:
+        raise HTTPException(status_code=401, detail="Credenciales inválidas")
+
+# --- ENDPOINT PARA LISTAR CASOS Y TECNICOS (ADMIN DASHBOARD) ---
+@app.get("/admin/casos")
+async def get_casos():
+    conn = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="",  # Cambia por tu contraseña real
+        database="Homeup"
+    )
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM Casos")
+    casos = cursor.fetchall()
+    cursor.execute("SELECT * FROM Tecnicos")
+    tecnicos = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return {"casos": casos, "tecnicos": tecnicos}
+
+

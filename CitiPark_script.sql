@@ -83,4 +83,51 @@ personal_mantenimiento varchar(50),
 );
 
 
+-- TABLA DE ADMINISTRADORES PARA LOGIN
+CREATE TABLE IF NOT EXISTS Administradores (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    nombre VARCHAR(100) NOT NULL
+);
+
+INSERT IGNORE INTO Administradores (email, password, nombre) VALUES ('admin@homeup.com', 'admin123', 'Admin General');
+
+-- TABLA DE TECNICOS PARA DASHBOARD ADMIN
+CREATE TABLE IF NOT EXISTS Tecnicos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR(100) NOT NULL,
+    especialidad VARCHAR(50) NOT NULL,
+    disponibilidad VARCHAR(20) DEFAULT 'Disponible'
+);
+
+-- TABLA DE CASOS PARA DASHBOARD ADMIN
+CREATE TABLE IF NOT EXISTS Casos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    cliente VARCHAR(100) NOT NULL,
+    direccion VARCHAR(200) NOT NULL,
+    servicio VARCHAR(50) NOT NULL,
+    descripcion TEXT NOT NULL,
+    fechaReporte DATE NOT NULL,
+    estado VARCHAR(30) DEFAULT 'Nuevo',
+    tecnicoAsignado INT,
+    FOREIGN KEY (tecnicoAsignado) REFERENCES Tecnicos(id)
+);
+
+-- DATOS DE EJEMPLO PARA TECNICOS Y CASOS
+INSERT IGNORE INTO Tecnicos (id, nombre, especialidad, disponibilidad) VALUES
+(101, 'Ricardo Mendoza', 'Plomería', 'Disponible'),
+(102, 'Javier Solano', 'Pintura', 'Ocupado'),
+(103, 'Luis Valbuena', 'Electricidad', 'Disponible'),
+(104, 'Andrés Parra', 'Albañilería', 'Disponible'),
+(105, 'Mario Lopera', 'Plomería', 'Disponible');
+
+INSERT IGNORE INTO Casos (id, cliente, direccion, servicio, descripcion, fechaReporte, estado, tecnicoAsignado) VALUES
+(1, 'Ana Martínez', 'Cra 7 # 12-34', 'Plomería', 'Fuga de agua en el lavamanos del baño principal.', '2025-06-10', 'Nuevo', NULL),
+(2, 'Carlos Jiménez', 'Calle 100 # 15-20', 'Electricidad', 'El interruptor de la sala no funciona y hay un cortocircuito.', '2025-06-10', 'Nuevo', NULL),
+(3, 'Sofía Castro', 'Av. El Dorado # 68-70', 'Albañilería', 'Necesito reparar una pared agrietada en la habitación.', '2025-06-09', 'Nuevo', NULL),
+(4, 'Empresa XYZ', 'Oficina 501, Edificio Central', 'Pintura', 'Pintar la sala de juntas principal.', '2025-06-08', 'En Progreso', 102);
+
+
 commit;
+

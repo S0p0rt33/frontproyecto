@@ -6,6 +6,7 @@ import Servicio from './servicio';
 import Equipo from './equipo';
 import Contacto from './contacto';
 import Cobertura from './cobertura';
+import Login from './login';
 
 // Elementos del menú de navegación
 const navItems = [
@@ -45,7 +46,7 @@ const Inicio = () => {
   const [hasAnimated, setHasAnimated] = useState(false);
 
   useEffect(() => {
-    // Cuando cambia la sección activa, hacer scroll al top de la página
+    // Cuando cambia la sección activa, hacer scroll al top de la página entonces lo que hace es CARGAR A PAGINA DEL INICIO
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (activeSection === "inicio" && !hasAnimated) {
       const timer = setTimeout(() => {
@@ -148,13 +149,19 @@ const Inicio = () => {
     "equipo": () => <div style={contentSectionWrapper}><Equipo colors={colors} /></div>,
     "cobertura": () => <div style={contentSectionWrapper}><Cobertura colors={colors} /></div>,
     "contacto": () => <div style={contentSectionWrapper}><Contacto colors={colors} /></div>,
+    "login": () => <div style={contentSectionWrapper}><Login colors={colors} /></div>, // 3. Así, al hacer clic en "Iniciar Sesión", se renderiza el login sin recargar la página.
   };
 
   return (
+
     <div style={pageStyle}>
-      {/* Header/nav único para toda la app SPA */}
+      {/* Header/nav único para toda la app SPA boton logo para devolver al inicio */}
       <header style={headerStyle}>
-        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginRight: 'auto' }}>HOME UP</div>
+        <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', cursor: 'pointer' }}
+          onClick={() => setActiveSection('inicio')}
+        >
+          <img src="/img/logohomeupbarrasuperior.png" alt="Logo HomeUp" style={{ height: '60px', marginRight: '20px', transition: 'transform 0.2s' }} />
+        </div>
         <div style={rightHeaderSectionStyle}>
           <nav>
             <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex' }}>
@@ -168,10 +175,30 @@ const Inicio = () => {
               ))}
             </ul>
           </nav>
-          <a href="/login" style={loginButtonStyle}
-            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.primaryAccent; e.currentTarget.style.color = '#000';}}
-            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = colors.primaryAccent; }}
-          >Iniciar Sesión</a>
+          {/* Botón de Iniciar Sesión con comportamiento visual igual al resto del menú */}
+          <span
+            style={{
+              ...navLinkStyle,
+              color: activeSection === 'login' ? colors.primaryAccent : colors.headerText,
+              cursor: 'pointer',
+              border: `2px solid ${colors.primaryAccent}`,
+              borderRadius: '50px',
+              padding: '8px 24px',
+              fontWeight: 'bold',
+              marginLeft: '10px',
+              backgroundColor: 'transparent',
+              transition: 'all 0.3s ease',
+            }}
+            onClick={() => setActiveSection('login')}
+            onMouseEnter={e => {
+              e.currentTarget.style.backgroundColor = colors.primaryAccent;
+              e.currentTarget.style.color = '#000';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+              e.currentTarget.style.color = activeSection === 'login' ? colors.primaryAccent : colors.primaryAccent;
+            }}
+          >Iniciar Sesión</span>
         </div>
       </header>
       {/* Renderizado SPA de la sección activa */}
@@ -186,3 +213,5 @@ const Inicio = () => {
 };
 
 export default Inicio;
+
+

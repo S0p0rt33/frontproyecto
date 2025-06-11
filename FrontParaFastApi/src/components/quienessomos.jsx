@@ -85,7 +85,7 @@ const QuienesSomos = ({ colors }) => {
   });
   const valueIconStyle = { fontSize: '2.5rem', marginBottom: '20px', color: colors.primaryAccent };
   const valueTitleStyle = { fontSize: '1.4rem', fontWeight: '600', marginBottom: '10px', color: colors.textDark };
-  const footerStyle = {
+  const footerStyle = {   
     textAlign: 'center', padding: '50px 40px', marginTop: '60px',
     backgroundColor: colors.footerBg, color: colors.footerText,
     borderTop: `1px solid ${colors.borderColor}`,
@@ -96,7 +96,7 @@ const QuienesSomos = ({ colors }) => {
       <main style={mainStyle}>
         <section id="quienes-somos" ref={introRef} style={{...overlappingContainerStyle, opacity: isIntroVisible ? 1 : 0, transform: isIntroVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s, transform 0.6s'}}>
           {/* Imagen de aliado.JPG */}
-          <div style={{...backgroundImageStyle, width: '65%', left: 0, backgroundImage: `url('/img/aliado.JPG')`}}></div>
+          <div style={{...backgroundImageStyle, width: '65%', left: 0, backgroundImage: `url('/img/aliado.JPG')`}} />
           <div style={{...overlappingCardStyle, width: '55%', marginLeft: 'auto', opacity: isIntroVisible ? 1 : 0, transform: isIntroVisible ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s 0.2s, transform 0.6s 0.2s'}}>
             <h1 style={sectionTitleStyle}>Somos <span style={accentTextStyle}>Aliados</span> en el Cuidado de tu Propiedad</h1>
             <p style={paragraphStyle}>
