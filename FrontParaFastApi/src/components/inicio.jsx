@@ -1,4 +1,11 @@
 import React from "react";
+import QuienesSomos from './quienessomos';
+import Equipo from './equipo';
+import Servicio from './servicio';
+import Cobertura from './cobertura';
+import Contacto from './contacto';
+
+
 
 // Elementos del menú de navegación
 const navItems = [
@@ -307,66 +314,38 @@ const Home = () => {
               </p>
               <button
                 style={ctaButtonStyle}
-                onClick={() => document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => document.getElementById('quienes-somos')?.scrollIntoView({ behavior: 'smooth' })}
                 onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = colors.heroButtonShadowHover; }}
                 onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = colors.heroButtonShadow; }}
               >
-                Ver Nuestros Servicios
+                Conócenos
               </button>
           </div>
         </section>
 
-        <section id="servicios" style={contentSectionStyle}>
-          <h2 style={sectionTitleStyle}>Nuestros Servicios Principales</h2>
-          <div style={gridStyle}>
-            {['💧', '⚡️', '🎨'].map((icon, index) => (
-              <div
-                key={index}
-                style={featureCardStyle}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.1)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.05)'; }}
-              >
-                  <div style={featureIconStyle}>{icon}</div>
-                  <h3 style={featureTitleStyle}>
-                    {index === 0 ? 'Plomería y Fontanería' : index === 1 ? 'Instalaciones Eléctricas' : 'Pintura y Acabados'}
-                  </h3>
-                  <p style={featureTextStyle}>
-                    {index === 0 ? 'Solucionamos desde fugas menores hasta instalaciones completas. Mantenimiento y reparaciones.' : index === 1 ? 'Servicios eléctricos seguros y certificados para tu hogar o negocio.' : 'Renueva tus espacios con acabados de alta calidad y durabilidad.'}
-                  </p>
-              </div>
-            ))}
-          </div>
+        {/* Sección Quiénes Somos (importada) */}
+        <section id="quienes-somos" style={contentSectionStyle}>
+          <QuienesSomos />
         </section>
 
-        <section id="quienes-somos" style={contentSectionStyle}>
-            <h2 style={sectionTitleStyle}>¿Por Qué Elegir HOME UP?</h2>
-            <div style={gridStyle}>
-                <div style={featureCardStyle}>
-                    <h3 style={featureTitleStyle}>Calidad Garantizada</h3>
-                    <p style={featureTextStyle}>Utilizamos los mejores materiales y personal calificado para asegurar que cada trabajo cumpla con los más altos estándares.</p>
-                </div>
-                <div style={featureCardStyle}>
-                    <h3 style={featureTitleStyle}>Respuesta Rápida</h3>
-                    <p style={featureTextStyle}>Entendemos la urgencia. Ofrecemos tiempos de respuesta ágiles para atender tus solicitudes a la brevedad.</p>
-                </div>
-                <div style={featureCardStyle}>
-                    <h3 style={featureTitleStyle}>Precios Transparentes</h3>
-                    <p style={featureTextStyle}>Te ofrecemos cotizaciones claras y detalladas sin costos ocultos. La honestidad es un pilar de nuestro servicio.</p>
-                </div>
-            </div>
+        {/* Sección Servicios (importada) */}
+        <section id="servicios" style={contentSectionStyle}>
+          <Servicio />
         </section>
         
+        {/* Sección Equipo (importada) */}
+        <section id="equipo" style={contentSectionStyle}>
+          <Equipo />
+        </section>
+
+        {/* Sección Cobertura (importada) */}
+        <section id="cobertura" style={contentSectionStyle}>
+          <Cobertura />
+        </section>
+
+        {/* Sección Contacto (importada) */}
         <section id="contacto" style={finalCtaSectionStyle}>
-            <h2 style={{...sectionTitleStyle, color: colors.heroTextColor, marginBottom: '20px'}}>¿Listo para tu Próximo Proyecto?</h2>
-            <p style={{...heroParagraphStyle, opacity: 0.8}}>Contáctanos hoy y recibe una cotización sin compromiso.</p>
-            <button
-                style={ctaButtonStyle}
-                onClick={() => alert('Redirigiendo a la página de contacto...')}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
-            >
-                Contáctanos Ahora
-            </button>
+          <Contacto />
         </section>
       </main>
 

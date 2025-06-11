@@ -1,10 +1,10 @@
-import FormCargo from "./components/FormCargo";
+import Inicio from "./components/inicio";
 
 
 function App() {
   return (
     <div className="App">
-          <FormCargo />
+          <Inicio />
           <quienessomos />
     </div>
   );
