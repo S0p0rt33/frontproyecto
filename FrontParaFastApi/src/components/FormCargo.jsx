@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import axiosInstance from "../api/axioInstance"; // Asegúrate que la ruta sea correcta
-import ListCargo from "./ListaCargo.jsx"; // Asegúrate que la ruta sea correcta y que este componente exista
+import React from "react";
 
 // Elementos del menú de navegación
 const navItems = [
@@ -8,334 +6,371 @@ const navItems = [
   { name: "QUIÉNES SOMOS", path: "#quienes-somos" },
   { name: "SERVICIOS", path: "#servicios" },
   { name: "EQUIPO", path: "#equipo" },
-  { name: "COBERTURA", path: "#cobertura" },
-  { name: "GALERÍA", path: "#galeria" },  
   { name: "CONTACTO", path: "#contacto" },
 ];
 
-const HEADER_HEIGHT = '50px';
+const HEADER_HEIGHT = '60px';
 
-const appColors = {
+// --- DEFINICIÓN DE MÚLTIPLES TEMAS DE DISEÑO ---
+const themeAqua = {
+  name: 'Aqua',
   headerBg: '#2c3e50',
-  headerText: '#ecf0f1',
-  pageBg: '#f4f6f6',
+  headerText: '#ffffff',
+  headerBorder: '#1abc9c',
+  pageBg: '#f4f7f6',
   cardBg: '#ffffff',
-  primaryAccent: '#3498db',
-  primaryAccentHover: '#2980b9',
-  textDark: '#333333',
-  textLight: '#555555',
-  borderColor: '#dddddd',
-  inputBg: '#ffffff',
-  footerBg: '#34495e',
+  primaryAccent: '#1abc9c',
+  primaryAccentHover: '#16a085',
+  textDark: '#34495e',
+  textLight: '#7f8c8d',
+  borderColor: '#e0e0e0',
+  footerBg: '#2c3e50',
   footerText: '#bdc3c7',
-  overlayColor: 'rgba(44, 62, 80, 0.6)', // Color para la superposición de la imagen (azul oscuro semitransparente)
+  overlayColor: 'rgba(44, 62, 80, 0.6)',
+  heroTextColor: '#ffffff',
+  heroButtonShadow: '0 6px 12px rgba(26, 188, 156, 0.3)',
+  heroButtonShadowHover: '0 8px 15px rgba(22, 160, 133, 0.4)',
 };
 
+const themePremium = {
+  name: 'Premium',
+  headerBg: '#2c3e50',
+  headerText: '#ffffff',
+  headerBorder: '#1abc9c',
+  pageBg: '#f8f9fa',
+  cardBg: '#ffffff',
+  primaryAccent: '#778DA9',
+  primaryAccentHover: '#415A77',
+  textDark: '#0D1B2A',
+  textLight: '#415A77',
+  borderColor: '#dee2e6',
+  footerBg: '#0D1B2A',
+  footerText: '#E0E1DD',
+  overlayColor: 'rgba(13, 27, 42, 0.7)',
+  heroTextColor: '#ffffff',
+  heroButtonShadow: '0 6px 12px rgba(65, 90, 119, 0.3)',
+  heroButtonShadowHover: '0 8px 15px rgba(65, 90, 119, 0.4)',
+};
 
+const themeVibrant = {
+  name: 'Vibrant',
+  headerBg: '#2c3e50',
+  headerText: '#ffffff',
+  headerBorder: '#1abc9c',
+  pageBg: '#121212',
+  cardBg: '#1c1c20',
+  primaryAccent: 'linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045)',
+  primaryAccentHover: 'linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045)',
+  textDark: '#f1f2f6',
+  textLight: '#a4a4a4',
+  borderColor: '#3a3a3a',
+  footerBg: '#1c1c20',
+  footerText: '#a4a4a4',
+  overlayColor: 'rgba(0, 0, 0, 0.5)',
+  heroTextColor: '#ffffff',
+  heroButtonShadow: '0 6px 20px rgba(253, 29, 29, 0.3)',
+  heroButtonShadowHover: '0 8px 25px rgba(253, 29, 29, 0.4)',
+};
+
+// --- Componente Principal de la Página de Inicio ---
 const Home = () => {
-  const [tareas, setTareas] = useState([]);
-  // ... (resto de tus estados no necesitan cambio para esto)
+  // Elige el tema para el cuerpo de la página. El header se mantendrá igual.
+  const activeTheme = themePremium; 
 
-  useEffect(() => {
-    const fetchTareas = async () => {
-      try {
-        const response = await axiosInstance.get("http://127.0.0.1:8000/tarea/");
-        setTareas(response.data);
-      } catch (error) {
-        console.error("Error al cargar las tareas:", error);
-        alert("Error al cargar las tareas. Revise la consola para más detalles.");
-      }
-    };
-    fetchTareas();
-  }, []);
+  const colors = activeTheme;
 
-  const handleCrearTarea = async (e) => {
-    // ... (tu función handleCrearTarea se mantiene igual)
-    e.preventDefault();
-    const currentIdCliente = e.target.elements.id_cliente.value;
-    const currentDescripcion = e.target.elements.descripcion.value;
-    const currentTipo = e.target.elements.tipo.value;
-    const currentFechaSolicitud = e.target.elements.fecha_solicitud.value;
-    const currentFechaFinalizacion = e.target.elements.fecha_finalizacion.value;
-    const currentEstado = e.target.elements.estado.value;
-    const currentPersonalMantenimiento = e.target.elements.personal_mantenimiento.value;
+  // --- OBJETOS DE ESTILO ---
 
-    const nuevaTarea = {
-      id_cliente: currentIdCliente,
-      descripcion: currentDescripcion,
-      tipo: currentTipo,
-      fecha_solicitud: currentFechaSolicitud,
-      fecha_finalizacion: currentFechaFinalizacion,
-      estado: currentEstado,
-      personal_mantenimiento: currentPersonalMantenimiento,
-    };
-
-    try {
-      console.log("Enviando nueva tarea:", nuevaTarea);
-      const response = await axiosInstance.post("http://127.0.0.1:8000/tarea/", nuevaTarea);
-      alert("El registro fue exitoso");
-      setTareas(prevTareas => [...prevTareas, response.data]);
-      e.target.reset();
-      // Resetear estados individuales si los usas para controlar el formulario directamente
-    } catch (error) {
-      alert("Ocurrió un error al crear la tarea.");
-      if (error.response) {
-        console.error("Error del servidor:", error.response.data);
-      } else {
-        console.error("Error de la solicitud:", error.message);
-      }
-    }
+  const pageStyle = {
+    backgroundColor: colors.pageBg,
+    fontFamily: "'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif",
+    color: colors.textDark,
   };
 
-  const inputStyle = {
-    width: 'calc(100% - 22px)',
-    padding: '10px',
-    marginBottom: '15px',
-    border: `1px solid ${appColors.borderColor}`,
-    borderRadius: '4px',
-    boxSizing: 'border-box',
-    fontSize: '1rem',
-    backgroundColor: appColors.inputBg,
-    color: appColors.textDark,
+  const headerStyle = {
+    backgroundColor: colors.headerBg,
+    color: colors.headerText,
+    padding: '0 40px',
+    height: HEADER_HEIGHT,
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    width: '100%',
+    zIndex: 1000,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    boxShadow: '0 3px 6px rgba(0,0,0,0.15)',
+    borderBottom: `3px solid ${colors.headerBorder}`,
+  };
+  
+  // NUEVO: Contenedor para los elementos de la derecha en el header
+  const rightHeaderSectionStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '25px', // Espacio entre el menú y el botón de login
   };
 
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-    color: appColors.textLight,
-    fontWeight: 'bold',
-    fontSize: '0.9rem',
+  const navLinkStyle = {
+    color: colors.headerText,
+    textDecoration: 'none',
+    padding: '10px 15px',
+    borderRadius: '6px',
+    fontWeight: '600',
+    fontSize: '0.9rem', // Ligeramente más pequeño para dar espacio
+    textTransform: 'uppercase',
+    transition: 'all 0.3s ease',
+  };
+  
+  // NUEVO: Estilo para el botón de Iniciar Sesión
+  const loginButtonStyle = {
+      ...navLinkStyle, // Hereda algunos estilos base
+      padding: '8px 20px',
+      border: `2px solid ${colors.headerBorder}`,
+      borderRadius: '50px',
+      backgroundColor: 'transparent',
+      color: colors.headerBorder,
+      fontWeight: 'bold',
   };
 
-  // Estilos para la sección promocional con imagen de fondo
-  const promotionalSectionStyle = {
+  const mainStyle = {
+    padding: '20px',
+    paddingTop: `calc(${HEADER_HEIGHT} + 40px)`,
+    maxWidth: '1100px',
+    margin: '0 auto'
+  };
+
+  const heroSectionStyle = {
     textAlign: 'center',
-    padding: '60px 30px', // Aumentamos el padding para dar más espacio a la imagen
-    marginBottom: '50px',
-    // ----- MODIFICACIÓN CLAVE PARA LA IMAGEN DE FONDO -----
-    // 1. Reemplaza '/images/mantenimiento-bg.jpg' con la ruta a TU imagen en la carpeta `public`.
-    //    Ejemplo: si tu imagen está en `public/mi-foto.png`, usa `url('/mi-foto.png')`.
-    // 2. `linear-gradient` crea una capa semitransparente sobre la imagen para mejorar la legibilidad del texto.
-    //    Puedes ajustar `appColors.overlayColor` o los valores rgba (ej. `rgba(0, 0, 0, 0.5)`) para cambiar la oscuridad/color de la capa.
-    backgroundImage: `linear-gradient(${appColors.overlayColor}, ${appColors.overlayColor}), url('/images/mantenimiento-bg.jpg')`,
-    backgroundSize: 'cover', // Hace que la imagen cubra todo el contenedor
-    backgroundPosition: 'center center', // Centra la imagen
-    borderRadius: '6px', // Bordes redondeados para la sección
-    color: appColors.headerText, // Texto claro para contraste sobre la imagen/overlay
-    // Eliminamos el borderBottom, ya que la imagen crea una separación visual.
+    padding: '120px 40px',
+    backgroundImage: `url('/images/mantenimiento-bg.jpg')`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center center',
+    backgroundAttachment: 'fixed',
+    borderRadius: '16px',
+    color: colors.heroTextColor,
+    position: 'relative',
+    overflow: 'hidden',
   };
 
-  const promotionalTitleStyle = {
-    color: '#FFFFFF', // Título blanco para máximo contraste
-    fontSize: '2.8rem', // Un poco más grande
+  const heroOverlayStyle = {
+      position: 'absolute',
+      top: 0, left: 0, right: 0, bottom: 0,
+      backgroundColor: colors.overlayColor,
+      backdropFilter: 'blur(4px)',
+      zIndex: 1,
+  };
+  
+  const heroContentStyle = {
+      position: 'relative',
+      zIndex: 2,
+      textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+  };
+
+  const heroTitleStyle = {
+    fontSize: '3.5rem',
     fontWeight: 'bold',
-    marginBottom: '25px',
-    lineHeight: '1.3',
-    textShadow: '1px 1px 4px rgba(0,0,0,0.5)', // Sombra de texto para legibilidad
+    marginBottom: '20px',
   };
 
-  const promotionalParagraphStyle = {
-    fontSize: '1.25rem', // Ligeramente más grande para mejor lectura
-    color: appColors.headerText, // Aseguramos texto claro
-    lineHeight: '1.8',
+  const heroParagraphStyle = {
+    fontSize: '1.25rem',
+    lineHeight: '1.7',
     maxWidth: '700px',
-    margin: '0 auto 25px auto',
-    textShadow: '1px 1px 3px rgba(0,0,0,0.4)', // Sombra de texto
+    margin: '0 auto 40px auto',
   };
 
+  const ctaButtonStyle = {
+    padding: '16px 40px',
+    background: colors.primaryAccent,
+    color: colors.headerText,
+    border: 'none',
+    borderRadius: '50px',
+    fontSize: '1.1rem',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    boxShadow: colors.heroButtonShadow,
+    transition: 'all 0.3s ease'
+  };
+
+  const contentSectionStyle = {
+    padding: '80px 20px',
+    textAlign: 'center',
+  };
+
+  const sectionTitleStyle = {
+    fontSize: '2.5rem',
+    color: colors.textDark,
+    marginBottom: '50px',
+    fontWeight: '600',
+  };
+
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+    gap: '30px',
+    textAlign: 'left',
+  };
+
+  const featureCardStyle = {
+    backgroundColor: colors.cardBg,
+    padding: '35px',
+    borderRadius: '12px',
+    borderTop: `4px solid`,
+    borderImageSource: colors.primaryAccent,
+    borderImageSlice: 1,
+    boxShadow: '0 8px 25px rgba(0,0,0,0.05)',
+    transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+  };
+  
+  const featureIconStyle = {
+      fontSize: '3rem',
+      background: colors.primaryAccent,
+      WebkitBackgroundClip: 'text',
+      color: 'transparent',
+      marginBottom: '20px',
+  };
+
+  const featureTitleStyle = {
+      fontSize: '1.5rem',
+      margin: '0 0 15px 0',
+      color: colors.textDark,
+  };
+
+  const featureTextStyle = {
+      fontSize: '1rem',
+      lineHeight: '1.6',
+      color: colors.textLight,
+  };
+  
+  const finalCtaSectionStyle = {
+      ...contentSectionStyle,
+      background: `linear-gradient(135deg, ${colors.footerBg} 0%, ${colors.headerBg} 100%)`,
+      color: colors.headerText,
+      borderRadius: '16px',
+      marginTop: '50px',
+  }
+
+  const footerStyle = {
+    textAlign: 'center',
+    padding: '40px 20px',
+    marginTop: '50px',
+    backgroundColor: colors.footerBg,
+    color: colors.footerText,
+  };
 
   return (
-    <div style={{ backgroundColor: appColors.pageBg, fontFamily: 'Arial, sans-serif', color: appColors.textDark }}>
-      <header style={{
-        backgroundColor: appColors.headerBg,
-        color: appColors.headerText,
-        padding: '0 20px',
-        height: HEADER_HEIGHT,
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100%',
-        zIndex: 1000,
-        boxSizing: 'border-box',
-        display: 'flex',
-        alignItems: 'center',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.2)'
-      }}>
-        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', marginRight: 'auto' }}>HOME UP</div>
-        <nav>
-          <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex' }}>
-            {navItems.map((item) => (
-              <li key={item.name} style={{ marginLeft: '10px' }}>
-                <a
-                  href={item.path}
-                  style={{
-                    color: appColors.headerText,
-                    textDecoration: 'none',
-                    padding: '8px 12px',
-                    borderRadius: '4px',
-                    transition: 'background-color 0.3s ease'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = appColors.primaryAccent}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  {item.name.toUpperCase()}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+    <div style={pageStyle}>
+      <header style={headerStyle}>
+        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', marginRight: 'auto' }}>HOME UP</div>
+        
+        {/* NUEVO: Contenedor para agrupar navegación y botón de login */}
+        <div style={rightHeaderSectionStyle}>
+            <nav>
+              <ul style={{ listStyleType: 'none', margin: 0, padding: 0, display: 'flex' }}>
+                {navItems.map((item) => (
+                  <li key={item.name} style={{ marginLeft: '5px' }}>
+                    <a
+                      href={item.path}
+                      style={navLinkStyle}
+                      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.headerBorder; e.currentTarget.style.color = '#000';}}
+                      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = colors.headerText; }}
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            {/* NUEVO: Botón de Iniciar Sesión */}
+            <a 
+                href="/login" // Este enlace te llevará a tu página de login
+                style={loginButtonStyle}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = colors.headerBorder; e.currentTarget.style.color = '#000';}}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = colors.headerBorder; }}
+            >
+                Iniciar Sesión
+            </a>
+        </div>
       </header>
 
-      <main style={{
-        padding: '20px',
-        paddingTop: `calc(${HEADER_HEIGHT} + 20px)`
-      }}>
-        <section id="inicio" style={{
-          backgroundColor: appColors.cardBg, // El fondo de la tarjeta principal se mantiene
-          padding: '25px', // Padding de la tarjeta principal
-          borderRadius: '8px',
-          boxShadow: '0 0 15px rgba(0,0,0,0.07)',
-          maxWidth: '800px',
-          margin: '0 auto'
-        }}>
-          {/* ========== INICIO DE LA SECCIÓN PROMOCIONAL CON IMAGEN DE FONDO ========== */}
-          <div style={promotionalSectionStyle}>
-            <h1 style={promotionalTitleStyle}>
-              HOME UP: Mantenimiento Experto Para Tus Espacios
-            </h1>
-            <p style={promotionalParagraphStyle}>
-              Transforma y protege tu propiedad con <strong>HOME UP</strong>. Ofrecemos soluciones integrales de mantenimiento locativo, garantizando calidad, eficiencia y la tranquilidad que mereces.
-            </p>
-            <p style={{...promotionalParagraphStyle, fontSize: '1.15rem', marginBottom: '35px' }}>
-              Desde reparaciones urgentes hasta proyectos de mejora y mantenimiento preventivo. ¡Estamos listos para ayudarte!
-            </p>
-            <button
-              style={{
-                padding: '14px 32px', // Botón un poco más grande
-                backgroundColor: appColors.primaryAccent,
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                fontSize: '1.15rem',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.25)', // Sombra más pronunciada
-                transition: 'background-color 0.3s ease, transform 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = appColors.primaryAccentHover;
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = appColors.primaryAccent;
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-              onClick={() => window.location.href = '#servicios'}
-            >
-              Descubre Nuestros Servicios
-            </button>
+      <main style={mainStyle}>
+        <section id="inicio" style={heroSectionStyle}>
+          <div style={heroOverlayStyle}></div>
+          <div style={heroContentStyle}>
+              <h1 style={heroTitleStyle}>Mantenimiento Experto Para Tus Espacios</h1>
+              <p style={heroParagraphStyle}>
+                Transforma y protege tu propiedad con <strong>HOME UP</strong>. Ofrecemos soluciones integrales, garantizando calidad, eficiencia y la tranquilidad que mereces.
+              </p>
+              <button
+                style={ctaButtonStyle}
+                onClick={() => document.getElementById('servicios')?.scrollIntoView({ behavior: 'smooth' })}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = colors.heroButtonShadowHover; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = colors.heroButtonShadow; }}
+              >
+                Ver Nuestros Servicios
+              </button>
           </div>
-          {/* ========== FIN DE LA SECCIÓN PROMOCIONAL ========== */}
+        </section>
 
-          <h2 style={{
-            color: appColors.headerBg,
-            textAlign: 'center',
-            marginBottom: '25px',
-            marginTop: '40px', // Añadido margen superior para separar del bloque de imagen
-            paddingBottom: '10px'
-          }}>
-            Gestión de Tareas de Mantenimiento
-          </h2>
-          <form onSubmit={handleCrearTarea}>
-            <h3 style={{
-              color: appColors.textDark,
-              textAlign: 'center',
-              marginBottom: '20px',
-              fontSize: '1.4rem'
-            }}>
-              Crear Nueva Tarea
-            </h3>
-            
-            <div>
-              <label htmlFor="id_cliente" style={labelStyle}>ID Cliente:</label>
-              <input type="text" id="id_cliente" name="id_cliente" required style={inputStyle} />
-            </div>
-            <div>
-              <label htmlFor="descripcion" style={labelStyle}>Descripción:</label>
-              <textarea id="descripcion" name="descripcion" required style={{...inputStyle, minHeight: '80px', resize: 'vertical' }} />
-            </div>
-            <div>
-              <label htmlFor="tipo" style={labelStyle}>Tipo:</label>
-              <input type="text" id="tipo" name="tipo" style={inputStyle} />
-            </div>
-            <div>
-              <label htmlFor="fecha_solicitud" style={labelStyle}>Fecha Solicitud:</label>
-              <input type="date" id="fecha_solicitud" name="fecha_solicitud" required style={inputStyle} />
-            </div>
-            <div>
-              <label htmlFor="fecha_finalizacion" style={labelStyle}>Fecha Finalización:</label>
-              <input type="date" id="fecha_finalizacion" name="fecha_finalizacion" style={inputStyle} />
-            </div>
-            <div>
-              <label htmlFor="estado" style={labelStyle}>Estado:</label>
-              <select id="estado" name="estado" defaultValue="pendiente" style={inputStyle}>
-                <option value="pendiente">Pendiente</option>
-                <option value="en_progreso">En Progreso</option>
-                <option value="completada">Completada</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="personal_mantenimiento" style={labelStyle}>Personal Mantenimiento:</label>
-              <input type="text" id="personal_mantenimiento" name="personal_mantenimiento" style={inputStyle} />
-            </div>
-
-            <button
-              type="submit"
-              style={{
-                marginTop: '20px',
-                padding: '12px 20px',
-                backgroundColor: appColors.primaryAccent,
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                width: '100%',
-                transition: 'background-color 0.3s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = appColors.primaryAccentHover}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = appColors.primaryAccent}
-            >
-              Cargar Tarea
-            </button>
-          </form>
-
-          <div style={{marginTop: '40px'}}>
-            <h2 style={{
-              color: appColors.headerBg,
-              textAlign: 'center',
-              marginBottom: '20px',
-              borderTop: `1px solid ${appColors.borderColor}`,
-              paddingTop: '20px'
-            }}>
-              Lista de Tareas/Cargos
-            </h2>
-            <ListCargo tareas={tareas} />
+        <section id="servicios" style={contentSectionStyle}>
+          <h2 style={sectionTitleStyle}>Nuestros Servicios Principales</h2>
+          <div style={gridStyle}>
+            {['💧', '⚡️', '🎨'].map((icon, index) => (
+              <div
+                key={index}
+                style={featureCardStyle}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)'; e.currentTarget.style.boxShadow = '0 12px 30px rgba(0,0,0,0.1)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.05)'; }}
+              >
+                  <div style={featureIconStyle}>{icon}</div>
+                  <h3 style={featureTitleStyle}>
+                    {index === 0 ? 'Plomería y Fontanería' : index === 1 ? 'Instalaciones Eléctricas' : 'Pintura y Acabados'}
+                  </h3>
+                  <p style={featureTextStyle}>
+                    {index === 0 ? 'Solucionamos desde fugas menores hasta instalaciones completas. Mantenimiento y reparaciones.' : index === 1 ? 'Servicios eléctricos seguros y certificados para tu hogar o negocio.' : 'Renueva tus espacios con acabados de alta calidad y durabilidad.'}
+                  </p>
+              </div>
+            ))}
           </div>
+        </section>
+
+        <section id="quienes-somos" style={contentSectionStyle}>
+            <h2 style={sectionTitleStyle}>¿Por Qué Elegir HOME UP?</h2>
+            <div style={gridStyle}>
+                <div style={featureCardStyle}>
+                    <h3 style={featureTitleStyle}>Calidad Garantizada</h3>
+                    <p style={featureTextStyle}>Utilizamos los mejores materiales y personal calificado para asegurar que cada trabajo cumpla con los más altos estándares.</p>
+                </div>
+                <div style={featureCardStyle}>
+                    <h3 style={featureTitleStyle}>Respuesta Rápida</h3>
+                    <p style={featureTextStyle}>Entendemos la urgencia. Ofrecemos tiempos de respuesta ágiles para atender tus solicitudes a la brevedad.</p>
+                </div>
+                <div style={featureCardStyle}>
+                    <h3 style={featureTitleStyle}>Precios Transparentes</h3>
+                    <p style={featureTextStyle}>Te ofrecemos cotizaciones claras y detalladas sin costos ocultos. La honestidad es un pilar de nuestro servicio.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="contacto" style={finalCtaSectionStyle}>
+            <h2 style={{...sectionTitleStyle, color: colors.heroTextColor, marginBottom: '20px'}}>¿Listo para tu Próximo Proyecto?</h2>
+            <p style={{...heroParagraphStyle, opacity: 0.8}}>Contáctanos hoy y recibe una cotización sin compromiso.</p>
+            <button
+                style={ctaButtonStyle}
+                onClick={() => alert('Redirigiendo a la página de contacto...')}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
+            >
+                Contáctanos Ahora
+            </button>
         </section>
       </main>
 
-      <footer style={{
-        textAlign: 'center',
-        padding: '20px',
-        marginTop: '30px',
-        backgroundColor: appColors.footerBg,
-        color: appColors.footerText,
-        borderTop: `3px solid ${appColors.primaryAccent}`
-      }}>
+      <footer style={footerStyle}>
         <p>&copy; {new Date().getFullYear()} HOME UP. Todos los derechos reservados.</p>
       </footer>
     </div>
