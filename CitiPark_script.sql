@@ -1,5 +1,5 @@
 /*IMPORTANTE: Comentar la siguente instrucción si se ejecutará este script en CLEVER-CLOUD*/
-DROP DATABASE IF EXISTS `Homeup`;
+DROP DATABASE IF EXISTS `homeup`;
 CREATE DATABASE Homeup;
 
 USE Homeup;

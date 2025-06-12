@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../api/axioInstance";
+import ListCargo from "./ListaCargo.jsx";
 
 // --- PALETA DE COLORES UNIFICADA (TEMA OSCURO + DORADO) ---
 const defaultColors = {
@@ -16,73 +18,82 @@ const defaultColors = {
 // --- COMPONENTE DE REGISTRO ---
 const Registro = ({ colors }) => {
   const theme = colors || defaultColors;
-
   // --- ESTADOS DEL COMPONENTE ---
   const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    cedula: '',
-    telefono: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
+    nombre: "",
+    apellido: "",
+    cedula: "",
+    telefono: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
-
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-
-  // Estado para la animación de entrada
   const [isCardVisible, setIsCardVisible] = useState(false);
-  useEffect(() => {
-    setIsCardVisible(true);
-  }, []);
+  useEffect(() => { setIsCardVisible(true); }, []);
 
   // --- MANEJO DE CAMBIOS EN EL FORMULARIO ---
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   // --- LÓGICA DE VALIDACIÓN ---
   const validateForm = () => {
     const newErrors = {};
-    // Validación de nombre y apellido
-    if (!formData.nombre) newErrors.nombre = 'El nombre es requerido.';
-    if (!formData.apellido) newErrors.apellido = 'El apellido es requerido.';
-    // Validación de cédula y teléfono (simple, solo verifica que no esté vacío y sea numérico)
-    if (!formData.cedula) newErrors.cedula = 'La cédula es requerida.';
-    else if (!/^\d+$/.test(formData.cedula)) newErrors.cedula = 'La cédula solo debe contener números.';
-    if (!formData.telefono) newErrors.telefono = 'El teléfono es requerido.';
-    else if (!/^\d+$/.test(formData.telefono)) newErrors.telefono = 'El teléfono solo debe contener números.';
-    // Validación de email
-    if (!formData.email) newErrors.email = 'El correo electrónico es requerido.';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'El formato del correo no es válido.';
-    // Validación de contraseña
-    if (!formData.password) newErrors.password = 'La contraseña es requerida.';
-    else if (formData.password.length < 8) newErrors.password = 'La contraseña debe tener al menos 8 caracteres.';
-    // Validación de confirmación de contraseña
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Las contraseñas no coinciden.';
-    
+    if (!formData.nombre) newErrors.nombre = "El nombre es requerido.";
+    if (!formData.apellido) newErrors.apellido = "El apellido es requerido.";
+    if (!formData.cedula) newErrors.cedula = "La cédula es requerida.";
+    else if (!/^\d+$/.test(formData.cedula)) newErrors.cedula = "La cédula solo debe contener números.";
+    if (!formData.telefono) newErrors.telefono = "El teléfono es requerido.";
+    else if (!/^\d+$/.test(formData.telefono)) newErrors.telefono = "El teléfono solo debe contener números.";
+    if (!formData.email) newErrors.email = "El correo electrónico es requerido.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "El formato del correo no es válido.";
+    if (!formData.password) newErrors.password = "La contraseña es requerida.";
+    else if (formData.password.length < 8) newErrors.password = "La contraseña debe tener al menos 8 caracteres.";
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Las contraseñas no coinciden.";
     setErrors(newErrors);
-    // Devuelve true si no hay errores, false si los hay
     return Object.keys(newErrors).length === 0;
   };
 
-  // --- LÓGICA DE REGISTRO ---
-  const handleRegister = (e) => {
+  // --- LÓGICA DE REGISTRO DE USUARIO ---
+  const handleRegister = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      setIsLoading(true);
-      // Simulación de llamada a la API para registrar al usuario
-      setTimeout(() => {
-        console.log("Usuario registrado:", formData); // En una app real, esto se enviaría al backend
-        setIsLoading(false);
-        setIsSuccess(true);
-      }, 2000);
+    if (!validateForm()) return;
+    setIsLoading(true);
+    const payload = {
+      nombre: formData.nombre,
+      apellido: formData.apellido,
+      cedula: formData.cedula,
+      telefono: formData.telefono,
+      email: formData.email,
+      password: formData.password,
+      confirmPassword: formData.confirmPassword
+
+    };
+    try {
+      await axiosInstance.post("http://127.0.0.1:8000/usuario/registro", payload); // Ajusta el endpoint si es necesario
+      setIsSuccess(true);
+      setFormData({
+        nombre: "",
+        apellido: "",
+        cedula: "",
+        telefono: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+    } catch (error) {
+      alert("Ocurrió un error al registrar el usuario.");
+      if (error.response) {
+        console.error("Error del servidor:", error.response.data);
+      } else {
+        console.error("Error de la solicitud:", error.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -138,25 +149,6 @@ const Registro = ({ colors }) => {
           <p style={{textAlign: 'center', color: theme.textLight}}>
             Tu cuenta ha sido creada correctamente. Ahora puedes iniciar sesión con tus credenciales.
           </p>
-          <button
-            style={{
-              ...buttonStyle,
-              maxWidth: '200px',
-              margin: '30px auto 0 auto',
-              backgroundColor: 'transparent',
-              color: theme.primaryAccent,
-              border: `2px solid ${theme.primaryAccent}`,
-              transition: 'all 0.3s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.backgroundColor = theme.primaryAccent;
-              e.currentTarget.style.color = '#1a1a32';
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.backgroundColor = 'transparent';
-              e.currentTarget.style.color = theme.primaryAccent;
-            }}
-          >Ir a Iniciar Sesión</button>
         </div>
       </div>
     );
@@ -168,70 +160,41 @@ const Registro = ({ colors }) => {
         <h1 style={titleStyle}>Crear una <span style={{color: theme.primaryAccent}}>Cuenta</span></h1>
         <form onSubmit={handleRegister} noValidate>
           <div style={formGridStyle}>
-            {/* Nombre */}
             <div style={formGroupStyle}>
               <label htmlFor="nombre" style={labelStyle}>Nombre</label>
-              <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = theme.primaryAccent}
-                onBlur={e => e.target.style.borderColor = theme.borderColor}
-              />
+              <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} style={inputStyle} required />
               {errors.nombre && <div style={errorStyle}>{errors.nombre}</div>}
             </div>
-            {/* Apellido */}
             <div style={formGroupStyle}>
               <label htmlFor="apellido" style={labelStyle}>Apellido</label>
-              <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = theme.primaryAccent}
-                onBlur={e => e.target.style.borderColor = theme.borderColor}
-              />
+              <input type="text" name="apellido" value={formData.apellido} onChange={handleChange} style={inputStyle} required />
               {errors.apellido && <div style={errorStyle}>{errors.apellido}</div>}
             </div>
-            {/* Cédula */}
             <div style={formGroupStyle}>
-              <label htmlFor="cedula" style={labelStyle}>Cédula de Ciudadanía</label>
-              <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = theme.primaryAccent}
-                onBlur={e => e.target.style.borderColor = theme.borderColor}
-              />
+              <label htmlFor="cedula" style={labelStyle}>Cédula</label>
+              <input type="text" name="cedula" value={formData.cedula} onChange={handleChange} style={inputStyle} required />
               {errors.cedula && <div style={errorStyle}>{errors.cedula}</div>}
             </div>
-            {/* Teléfono */}
             <div style={formGroupStyle}>
               <label htmlFor="telefono" style={labelStyle}>Teléfono</label>
-              <input type="tel" name="telefono" value={formData.telefono} onChange={handleChange} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = theme.primaryAccent}
-                onBlur={e => e.target.style.borderColor = theme.borderColor}
-              />
+              <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} style={inputStyle} required />
               {errors.telefono && <div style={errorStyle}>{errors.telefono}</div>}
             </div>
-             {/* Email */}
-            <div style={{...formGroupStyle, gridColumn: '1 / -1'}}>
+            <div style={formGroupStyle}>
               <label htmlFor="email" style={labelStyle}>Correo Electrónico</label>
-              <input type="email" name="email" value={formData.email} onChange={handleChange} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = theme.primaryAccent}
-                onBlur={e => e.target.style.borderColor = theme.borderColor}
-              />
+              <input type="email" name="email" value={formData.email} onChange={handleChange} style={inputStyle} required />
               {errors.email && <div style={errorStyle}>{errors.email}</div>}
             </div>
-             {/* Contraseña */}
             <div style={formGroupStyle}>
               <label htmlFor="password" style={labelStyle}>Contraseña</label>
-              <input type="password" name="password" value={formData.password} onChange={handleChange} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = theme.primaryAccent}
-                onBlur={e => e.target.style.borderColor = theme.borderColor}
-              />
+              <input type="password" name="password" value={formData.password} onChange={handleChange} style={inputStyle} required />
               {errors.password && <div style={errorStyle}>{errors.password}</div>}
             </div>
-             {/* Confirmar Contraseña */}
             <div style={formGroupStyle}>
               <label htmlFor="confirmPassword" style={labelStyle}>Confirmar Contraseña</label>
-              <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} style={inputStyle}
-                onFocus={e => e.target.style.borderColor = theme.primaryAccent}
-                onBlur={e => e.target.style.borderColor = theme.borderColor}
-              />
+              <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} style={inputStyle} required />
               {errors.confirmPassword && <div style={errorStyle}>{errors.confirmPassword}</div>}
             </div>
-            {/* Botón de Registro */}
             <button type="submit" style={buttonStyle} disabled={isLoading}
               onMouseEnter={e => e.currentTarget.style.backgroundColor = theme.primaryAccentHover}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = theme.primaryAccent}

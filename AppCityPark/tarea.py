@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
-from Clever_MySQL_conn import cleverCursor, mysqlConn
+from Clever_MySQL_conn import CleverCursor, mysqlConn
 import datetime
  
 
@@ -19,15 +19,15 @@ class Tarea(BaseModel):
 @tareaRouter.post("/tarea")
 async def create_tarea(tarea: Tarea):
     query = f"INSERT INTO tarea (id_tarea, id_cliente, Descripcion, Tipo, fecha_solicitud, fecha_finalizacion, estado, personal_Mantenimiento) VALUES ({tarea.id_tarea}, {tarea.id_cliente}, '{tarea.descripcion}', '{tarea.tipo}', '{tarea.fecha_solicitud}', '{tarea.fecha_finalizacion}', '{tarea.estado}', '{tarea.personal_mantenimiento}')"
-    cleverCursor.execute(query)
+    CleverCursor.execute(query)
     mysqlConn.commit()
     return {"message": "tarea created successfully"}
 
 @tareaRouter.get("/tareas", response_model=list[Tarea])
 async def get_tareas():
     query = "SELECT id_tarea, id_cliente, Descripcion, Tipo, fecha_solicitud, fecha_finalizacion, estado, personal_Mantenimiento FROM Tarea"
-    cleverCursor.execute(query)
-    results = cleverCursor.fetchall()
+    CleverCursor.execute(query)
+    results = CleverCursor.fetchall()
 
     tareas = [
         Tarea(

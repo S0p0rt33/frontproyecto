@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
-from Clever_MySQL_conn import cleverCursor
+from Clever_MySQL_conn import CleverCursor
 
 usuarioRouter =  APIRouter()
 
@@ -19,6 +19,6 @@ class UsuarioDB(BaseModel):
 @usuarioRouter.get("/cityPark_usuarios/", status_code=status.HTTP_302_FOUND)
 async def get_users():
     selectAll_query = 'Select * from usuario'
-    cleverCursor.execute(selectAll_query)
-    result = cleverCursor.fethall()
+    CleverCursor.execute(selectAll_query)
+    result = CleverCursor.fethall()
     return result

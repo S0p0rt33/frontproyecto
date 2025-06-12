@@ -7,6 +7,7 @@ from tarea import tareaRouter
 from fastapi import Request, HTTPException
 import mysql.connector
 from pydantic import BaseModel
+from nuevoregistro import nuevoregistroRouter
 
 app = FastAPI()
 
@@ -21,6 +22,7 @@ app.add_middleware(
 app.include_router(usuarioRouter)
 app.include_router(cargoRouter)
 app.include_router(tareaRouter)
+app.include_router(nuevoregistroRouter)
 
 @app.get("/")
 async def read_root():

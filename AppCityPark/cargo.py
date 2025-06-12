@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
-from Clever_MySQL_conn import cleverCursor, mysqlConn
+from Clever_MySQL_conn import CleverCursor
 
 cargoRouter =  APIRouter()
 
@@ -17,15 +17,15 @@ class CargoDB(BaseModel):
 @cargoRouter.get("/cargo")
 async def get_users(cargo: CargoDB):
     selectAll_query = 'Select * from cargo'
-    cleverCursor.execute(selectAll_query)
-    result = cleverCursor.fetchall()
+    CleverCursor.execute(selectAll_query)
+    result = CleverCursor.fetchall()
     return result
 
 @cargoRouter.get("/cityPark_cargo/{cargo_id}", status_code=status.HTTP_200_OK)
 def get_user_by_id(cargo_id: int):
     select_query = "SELECT * FROM cargo WHERE id_cargo = %s"
-    cleverCursor.execute(select_query, (cargoDB_id_tarea, CargoDB_id_cliente, CargoDB_descripcion, CargoDB_tipo, CargoDB_fecha_solicitud, CargoDB_fecha_finalizacion, CargoDB_estado, CargoDB_personal_mantenimiento))
-    result = cleverCursor.fetchone()
+    CleverCursor.execute(select_query, (cargoDB_id_tarea, CargoDB_id_cliente, CargoDB_descripcion, CargoDB_tipo, CargoDB_fecha_solicitud, CargoDB_fecha_finalizacion, CargoDB_estado, CargoDB_personal_mantenimiento))
+    result = CleverCursor.fetchone()
     if result:
         return result
     else:
@@ -40,7 +40,7 @@ def insert_user(cargoPost: CargoDB):
     values = (cargoPost.nombre_cargo, cargoPost.salario)
 
     try:
-        cleverCursor.execute(insert_query, values)
+        CleverCursor.execute(insert_query, values)
         mysqlConn.commit()
     except mysqlConn.connector.Error as err:
         raise HTTPException(status_code=400, detail=f"Error: {err}")

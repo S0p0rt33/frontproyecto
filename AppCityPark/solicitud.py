@@ -21,4 +21,11 @@ async def create_solicitud(solicitud: Solicitud):
     return {"message": "Solicitud created successfully"}
 
     
-    
+@createSolicitudRouter.get("/solicitud/{id_solicitud}")
+async def get_solicitud(id_solicitud: int):
+    query = f"SELECT * FROM Solicitud WHERE id_solicitud = {id_solicitud}"
+    CleverCursor.execute(query)
+    result = CleverCursor.fetchone()
+    if not result:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Solicitud not found")
+    return result 

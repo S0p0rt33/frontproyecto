@@ -2,8 +2,8 @@ import mysql
 import mysql.connector
 
 #Connect to the database
-mysqlConn = mysql.connector.Connect(
-    host = 'localhost', #'bmn0p7ohukcq6xxuqudp-mysql.services.clever-cloud.com',
+mysqlConn = mysql.connector.connect(
+    host = '127.0.0.1', #'bmn0p7ohukcq6xxuqudp-mysql.services.clever-cloud.com',
     user = 'root', #upfp89sjo0fd79v0',
     password = '',#'HGByo9urELWdufYqUvsG',
     database = 'homeup',#'bmn0p7ohukcq6xxuqudp',
@@ -11,4 +11,5 @@ mysqlConn = mysql.connector.Connect(
 )
 
 #Create a cursor object
-cleverCursor = mysqlConn.cursor()
+CleverCursor = mysqlConn.cursor()
+
